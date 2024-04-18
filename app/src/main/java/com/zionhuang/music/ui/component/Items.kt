@@ -6,7 +6,9 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -1191,6 +1193,7 @@ fun YouTubeListItem(
     isActive = isActive
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun YouTubeGridItem(
     item: YTItem,
@@ -1376,13 +1379,14 @@ fun YouTubeGridItem(
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
+            modifier = Modifier
+                .basicMarquee().fillMaxWidth(),
             text = item.title,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            maxLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = if (item is ArtistItem) TextAlign.Center else TextAlign.Start,
-            modifier = Modifier.fillMaxWidth()
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1397,10 +1401,12 @@ fun YouTubeGridItem(
 
             if (subtitle != null) {
                 Text(
+                    modifier = Modifier
+                        .basicMarquee(),
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
