@@ -18,7 +18,7 @@
     <string name="mood_and_genres">氛围和流派</string>
     <string name="account">账号</string>
     <string name="quick_picks">歌曲快选</string>
-    <string name="quick_picks_empty">播放几首歌为你生成推荐</string>
+    <string name="quick_picks_empty">听一些歌曲来生成歌曲快选</string>
     <string name="new_release_albums">新专辑</string>
     <string name="forgotten_favorites">被遗忘的最爱</string>
     <string name="similar_to">类似于：</string>
