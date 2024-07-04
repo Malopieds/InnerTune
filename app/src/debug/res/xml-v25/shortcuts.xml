@@ -8,6 +8,6 @@
         <intent
             android:targetClass="com.malopieds.innertune.MainActivity"
             android:targetPackage="com.malopieds.innertune.debug"
-            android:action="com.malopieds.innertune.action.SEARCH" />
+            android:action="com.moaxaxx.remetrolist.action.SEARCH" />
     </shortcut>
 </shortcuts>
