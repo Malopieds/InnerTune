@@ -13,11 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up JDK 1.8
+    - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
         distribution: 'zulu' # Specify the distribution (Zulu, Adopt, Oracle)
-        java-version: '8'
+        java-version: '17'
 
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
