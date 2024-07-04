@@ -117,7 +117,7 @@ fun AboutScreen(
                 Spacer(Modifier.width(4.dp))
 
                 Text(
-                    text = "BETA",
+                    text = "DEBUG",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
