@@ -84,7 +84,7 @@ fun AboutScreen(
             Text(
                 text = BuildConfig.VERSION_NAME,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .border(
                         width = 1.dp,
@@ -96,6 +96,8 @@ fun AboutScreen(
                         vertical = 2.dp
                     )
             )
+
+            Spacer(Modifier.width(4.dp)) //
 
             Text(
                 text = BuildConfig.FLAVOR.uppercase(),
