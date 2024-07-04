@@ -55,7 +55,7 @@ jobs:
         keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
         keyPassword: ${{ secrets.KEYSTORE_PASS }}
       env:
-        BUILD_TOOLS_VERSION: "30.0.3"
+        BUILD_TOOLS_VERSION: "34.0.0"
 
     - uses: softprops/action-gh-release@v2
       name: Create Release
