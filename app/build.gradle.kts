@@ -15,7 +15,7 @@ android {
     compileSdk = 34
     buildToolsVersion = "34.0.0"
     defaultConfig {
-        applicationId = "com.malopieds.innertune"
+        applicationId = "com.moaxaxx.remetrolist"
         minSdk = 24
         targetSdk = 34
         versionCode = 24
