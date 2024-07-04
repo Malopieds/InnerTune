@@ -146,79 +146,82 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        setupRemoteConfig()
+    setupRemoteConfig()
 
-        setContent {
-            val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
-            val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
-            val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
-            val isSystemInDarkTheme = isSystemInDarkTheme()
-            val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
-                if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-            }
-            LaunchedEffect(useDarkTheme) {
-                setSystemBarAppearance(useDarkTheme)
-            }
-            var themeColor by rememberSaveable(stateSaver = ColorSaver) {
-                mutableStateOf(DefaultThemeColor)
-            }
+    setContent {
+        val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
+        val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
+        var pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+        val isSystemInDarkTheme = isSystemInDarkTheme()
+        val useDarkTheme = remember(darkTheme, isSystemInDarkTheme) {
+            if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
+        }
 
-            LaunchedEffect(playerConnection, enableDynamicTheme, isSystemInDarkTheme) {
-                val playerConnection = playerConnection
-                if (!enableDynamicTheme || playerConnection == null) {
-                    themeColor = DefaultThemeColor
-                    return@LaunchedEffect
-                }
-                playerConnection.service.currentMediaMetadata.collectLatest { song ->
-                    themeColor = if (song != null) {
-                        withContext(Dispatchers.IO) {
-                            val result = imageLoader.execute(
-                                ImageRequest.Builder(this@MainActivity)
-                                    .data(song.thumbnailUrl)
-                                    .allowHardware(false) // pixel access is not supported on Config#HARDWARE bitmaps
-                                    .build()
-                            )
-                            (result.drawable as? BitmapDrawable)?.bitmap?.extractThemeColor() ?: DefaultThemeColor
-                        }
-                    } else DefaultThemeColor
-                }
-            }
+        // Set pureBlack to true if useDarkTheme is true
+        LaunchedEffect(useDarkTheme) {
+            setSystemBarAppearance(useDarkTheme)
+            pureBlack = useDarkTheme
+        }
 
-            InnerTuneTheme(
-                darkTheme = useDarkTheme,
-                pureBlack = pureBlack,
-                themeColor = themeColor
+        var themeColor by rememberSaveable(stateSaver = ColorSaver) {
+            mutableStateOf(DefaultThemeColor)
+        }
+
+        LaunchedEffect(playerConnection, enableDynamicTheme, isSystemInDarkTheme) {
+            val playerConnection = playerConnection
+            if (!enableDynamicTheme || playerConnection == null) {
+                themeColor = DefaultThemeColor
+                return@LaunchedEffect
+            }
+            playerConnection.service.currentMediaMetadata.collectLatest { song ->
+                themeColor = if (song != null) {
+                    withContext(Dispatchers.IO) {
+                        val result = imageLoader.execute(
+                            ImageRequest.Builder(this@MainActivity)
+                                .data(song.thumbnailUrl)
+                                .allowHardware(false) // pixel access is not supported on Config#HARDWARE bitmaps
+                                .build()
+                        )
+                        (result.drawable as? BitmapDrawable)?.bitmap?.extractThemeColor() ?: DefaultThemeColor
+                    }
+                } else DefaultThemeColor
+            }
+        }
+
+        InnerTuneTheme(
+            darkTheme = useDarkTheme,
+            pureBlack = pureBlack,
+            themeColor = themeColor
+        ) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             ) {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                ) {
-                    val focusManager = LocalFocusManager.current
-                    val density = LocalDensity.current
-                    val windowsInsets = WindowInsets.systemBars
-                    val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
+                val focusManager = LocalFocusManager.current
+                val density = LocalDensity.current
+                val windowsInsets = WindowInsets.systemBars
+                val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
 
-                    val navController = rememberNavController()
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-                    val navigationItems = remember { Screens.MainScreens }
-                    val defaultOpenTab = remember {
-                        dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
+                val navigationItems = remember { Screens.MainScreens }
+                val defaultOpenTab = remember {
+                    dataStore[DefaultOpenTabKey].toEnum(defaultValue = NavigationTab.HOME)
+                }
+                val tabOpenedFromShortcut = remember {
+                    when (intent?.action) {
+                        ACTION_LIBRARY -> NavigationTab.LIBRARY
+                        else -> null
                     }
-                    val tabOpenedFromShortcut = remember {
-                        when (intent?.action) {
-                            ACTION_LIBRARY -> NavigationTab.LIBRARY
-                            else -> null
-                        }
-                    }
-
+                }
                     val (query, onQueryChange) = rememberSaveable(stateSaver = TextFieldValue.Saver) {
                         mutableStateOf(TextFieldValue())
                     }
