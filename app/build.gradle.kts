@@ -13,7 +13,7 @@ plugins {
 android {
     namespace = "com.malopieds.innertune"
     compileSdk = 34
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "34.0.0"
     defaultConfig {
         applicationId = "com.malopieds.innertune"
         minSdk = 24
