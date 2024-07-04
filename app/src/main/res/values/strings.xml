@@ -60,12 +60,10 @@
     <!-- Album screen -->
     <string name="other_versions">Other Versions</string>
     
-
     <!-- Library -->
-    <string name="liked">Liked</string>
-    <string name="offline">Offline</string>
+    <string name="liked">Likes</string>
+    <string name="offline">Downloads</string>
     <string name="my_top">My Top</string>
-
 
     <!-- Playlist -->
     <string name="liked_songs">Liked songs</string>
