@@ -31,7 +31,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: 17
-        distribution: 'adopt'
+        distribution: 'zulu'
         cache: gradle
         
     - name: Grant execution permission to Gradle Wrapper
