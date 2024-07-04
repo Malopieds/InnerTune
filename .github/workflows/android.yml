@@ -1,21 +1,51 @@
-name: CI
+name: Build [Android]
 
-on: push
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.draft == false && (github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, 'noci')) }}
+
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: "11"
-          distribution: "temurin"
-          cache: gradle
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v2
-        with:
-          name: app.apk
-          path: app/build/outputs/apk/release/app.apk
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - uses: cachix/install-nix-action@v27
+    - uses: DeterminateSystems/magic-nix-cache-action@main
+    - uses: nicknovitski/nix-develop@v1
+
+    - name: Build debug APK
+      run: ./gradlew androidApp:packageDebug
+    - name: Build release APK
+      run: ./gradlew androidApp:packageRelease
+
+    - name: Upload universal debug APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug
+        path: androidApp/build/outputs/apk/debug/*.apk
+
+    - name: Upload universal release APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        path: androidApp/build/outputs/apk/release/*.apk
+
+    - name: Get short commit hash
+      run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    - name: Send completion notification to Discord webhook
+      uses: discord-actions/message@v2
+      env:
+        BUILD_NOTIFICATION_DISCORD_WEBHOOK: ${{ secrets.BUILD_NOTIFICATION_DISCORD_WEBHOOK }}
+      if: env.BUILD_NOTIFICATION_DISCORD_WEBHOOK != null && github.event_name != 'pull_request'
+      with:
+        webhookUrl: ${{ secrets.BUILD_NOTIFICATION_DISCORD_WEBHOOK }}
+        message: "${{ github.workflow }} [build](<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}>) completed for commit - [${{ env.COMMIT_SHA }}](<${{ github.event.head_commit.url }}>) ${{ github.event.head_commit.message }} - [Downloads](https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }})"
