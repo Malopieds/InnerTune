@@ -83,11 +83,19 @@ fun AboutScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = BuildConfig.VERSION_NAME,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        shape = CircleShape
+                    )
+                    .padding(
+                        horizontal = 6.dp,
+                        vertical = 2.dp
+                    )
             )
-
-            Spacer(Modifier.width(4.dp))
 
             Text(
                 text = BuildConfig.FLAVOR.uppercase(),
@@ -109,7 +117,7 @@ fun AboutScreen(
                 Spacer(Modifier.width(4.dp))
 
                 Text(
-                    text = "DEBUG",
+                    text = "BETA",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
@@ -129,7 +137,7 @@ fun AboutScreen(
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "by Zion Huang, forked my Malopieds",
+            text = "Moxxaxx",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.secondary
         )
@@ -138,7 +146,7 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/Malopieds/InnerTune") }
+                onClick = { uriHandler.openUri("https://github.com/moaxaxx/InnerTune") }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
