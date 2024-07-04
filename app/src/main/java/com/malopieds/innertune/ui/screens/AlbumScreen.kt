@@ -477,7 +477,7 @@ fun AlbumScreen(
             if (otherVersions.isNotEmpty()) {
                 item {
                     NavigationTitle(
-                        title = "Other versions",
+                        title = stringResource(R.string.other_version),
                     )
                 }
                 item {
