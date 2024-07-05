@@ -25,6 +25,16 @@ jobs:
 
     - run: gradle assembleRelease
 
+    - name: Sign app APK
+      id: sign_app
+      uses: ilharp/sign-android-release@nightly
+      with:
+        releaseDir: app/build/outputs/apk/release
+        signingKey: ${{ secrets.SIGNING_KEY }}
+        keyAlias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
