@@ -110,7 +110,7 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/moaxaxx/InnerTune") }
+                onClick = { uriHandler.openUri("https://github.com/moaxaxx/reMetrolist") }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
