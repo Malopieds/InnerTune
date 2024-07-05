@@ -1,26 +1,44 @@
-name: Android CI
+name: Build Release APK
 
 on:
-  push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+  workflow_dispatch:
 
 jobs:
-  build:
 
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
     - name: set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
-        distribution: 'zulu'
-        cache: gradle
+        distribution: 'temurin'
+        cache: 'gradle'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - uses: gradle/actions/setup-gradle@v3
+
+    - run: gradle assembleRelease
+
+    - name: Sign app APK
+      id: sign_app
+      uses: ilharp/sign-android-release@nightly
+      with:
+        releaseDir: app/build/outputs/apk/release
+        signingKey: ${{ secrets.SIGNING_KEY }}
+        keyAlias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: signed-apks
+        path: app/build/outputs/apk/release/*-arm64-v8a-release-signed.apk
+        if-no-files-found: error
+        retention-days: 20
