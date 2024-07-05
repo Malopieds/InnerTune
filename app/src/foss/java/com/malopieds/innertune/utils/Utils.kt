@@ -1,8 +1,9 @@
 package com.malopieds.innertune.utils
 
-import com.malopieds.innertune.db.entities.LyricsEntity
+import com.malopieds.innertune.MainActivity
 
-object TranslationHelper {
-    suspend fun translate(lyrics: LyricsEntity): LyricsEntity = lyrics
-    suspend fun clearModels() {}
+fun MainActivity.setupRemoteConfig() {}
+
+fun reportException(throwable: Throwable) {
+    throwable.printStackTrace()
 }
