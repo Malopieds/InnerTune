@@ -22,8 +22,8 @@ jobs:
     - name: Install Android SDK Command Line Tools
       run: |
         sudo apt-get install -y wget unzip
-        wget https://dl.google.com/android/repository/commandlinetools-linux-6858067_latest.zip
-        unzip commandlinetools-linux-6858067_latest.zip -d $HOME/android-sdk
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+        unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk
         yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --update
 
     - name: Install Build Tools
@@ -41,4 +41,4 @@ jobs:
         ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
 
     - name: Verify APK
-      run: $HOME/android-sdk/build-tools/30.0.3/apksigner verify app-release-signed.apk
+      run: $HOME/android-sdk/build-tools/34.0.0/apksigner verify app-release-signed.apk
