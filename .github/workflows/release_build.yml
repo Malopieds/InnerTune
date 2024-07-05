@@ -49,7 +49,7 @@ jobs:
       name: Sign app APK
       id: sign_app
       with:
-        releaseDirectory: app/build/outputs/apk/release
+        releaseDirectory: app/build/outputs/apk/release/*.apk
         signingKeyBase64: ${{ secrets.KEY_BASE64 }}
         alias: ${{ secrets.KEY_ALIAS }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
