@@ -9,8 +9,8 @@
 
     <!-- Top bar -->
     <plurals name="n_selected">
-        <item quantity="one">1 επιλέχτηκε</item>
-        <item quantity="other">%d επιλέχθηκαν</item>
+        <item quantity="one">επιλέχτηκε 1</item>
+        <item quantity="other">επιλέχθηκαν %d</item>
     </plurals>
 
     <!-- Home -->
