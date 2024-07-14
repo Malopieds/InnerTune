@@ -39,7 +39,7 @@
 
     <!-- Search -->
     <string name="search">Αναζήτηση</string>
-    <string name="search_yt_music">Αναζήτηση στο YouTube Μουσική...</string>
+    <string name="search_yt_music">Αναζήτηση στο YouTube Μουσική…</string>
     <string name="search_library">Αναζήτηση βιβλιοθήκης…</string>
     <string name="filter_library">Βιβλιοθήκη</string>
     <string name="filter_liked">Αγαπημένα</string>
