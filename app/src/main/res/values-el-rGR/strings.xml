@@ -9,6 +9,7 @@
 
     <!-- Top bar -->
     <plurals name="n_selected">
+        <item quantity="one">1 επιλέχτηκε</item>
         <item quantity="other">%d επιλέχθηκαν</item>
     </plurals>
 
@@ -273,7 +274,7 @@
     <string name="clear_image_cache">Εκκαθάριση προσωρινής μνήμης</string>
     <string name="max_song_cache_size">Μέγιστη προσωρινής μνήμης τραγουδιών</string>
     <string name="clear_song_cache">Εκκαθάριση προσωρινής μνήμης τραγουδιών</string>
-    <string name="size_used">%s used</string>
+    <string name="size_used">%s χρησιμοποιούνται</string>
 
     <string name="privacy">Απόρρητο</string>
     <string name="pause_listen_history">Παύση ιστορικού ακρόασης</string>
