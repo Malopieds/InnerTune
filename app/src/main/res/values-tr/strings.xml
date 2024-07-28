@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-<resources>
+    
     <!-- Alt gezinme -->
     <string name="home">Ana Sayfa</string>
     <string name="songs">Şarkılar</string>
