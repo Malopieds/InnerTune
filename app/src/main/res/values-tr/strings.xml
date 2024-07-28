@@ -167,15 +167,15 @@
         <item quantity="one">%d çalma listesi</item>
         <item quantity="other">%d çalma listesi</item>
     </plurals>
-    <plurals name="n_week"> tools:ignore="MissingQuantity">
+    <plurals name="n_week" tools:ignore="MissingQuantity">
         <item quantity="one">%d hafta</item>
         <item quantity="other">%d hafta</item>
     </plurals>
-    <plurals name="n_month"> tools:ignore="MissingQuantity">
+    <plurals name="n_month" tools:ignore="MissingQuantity">
         <item quantity="one">%d ay</item>
         <item quantity="other">%d ay</item>
     </plurals>
-    <plurals name="n_year"> tools:ignore="MissingQuantity">
+    <plurals name="n_year" tools:ignore="MissingQuantity">
         <item quantity="one">%d yıl</item>
         <item quantity="other">%d yıl</item>
     </plurals>
