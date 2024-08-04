@@ -17,7 +17,7 @@
     <string name="mood_and_genres">분위기 및 장르</string>
     <string name="account">계정</string>
     <string name="quick_picks">빠른 선곡</string>
-    <string name="quick_picks_empty">Listen to songs to generate your quick picks</string>
+    <string name="quick_picks_empty">빠른 선곡을 생성하려면 음악을 들으세요</string>
     <string name="new_release_albums">새 앨범</string>
 
     <!-- History -->
@@ -27,9 +27,9 @@
     <string name="last_week">지난 주</string>
 
     <!-- Stats -->
-    <string name="most_played_songs">Most played songs</string>
-    <string name="most_played_artists">Most played artists</string>
-    <string name="most_played_albums">Most played albums</string>
+    <string name="most_played_songs">가장 많이 재생된 곡</string>
+    <string name="most_played_artists">가장 많이 재생된 아티스트</string>
+    <string name="most_played_albums">가장 많이 재생된 앨범</string>
 
     <!-- Search -->
     <string name="search">검색</string>
@@ -98,7 +98,7 @@
     <string name="sort_by_custom">Custom order</string>
 
     <!-- Dialog -->
-    <string name="media_id">Media id</string>
+    <string name="media_id">미디어 ID</string>
     <string name="mime_type">MIME 유형</string>
     <string name="codecs">코덱</string>
     <string name="bitrate">전송 속도</string>
