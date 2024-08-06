@@ -18,7 +18,6 @@
     <string name="account">계정</string>
     <string name="quick_picks">빠른 선곡</string>
     <string name="quick_picks_empty">빠른 선곡을 생성하려면 음악을 들으세요</string>
-    <string name="new_release_albums">새 앨범</string>
 
     <!-- History -->
     <string name="today">오늘</string>

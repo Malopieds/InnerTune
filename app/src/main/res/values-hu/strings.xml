@@ -19,7 +19,6 @@
     <string name="account">Fiók</string>
     <string name="quick_picks">Gyors választás</string>
     <string name="quick_picks_empty">Hallgasson meg néhány dalt a gyors választások elkészítéséhez</string>
-    <string name="new_release_albums">Új kiadású albumok</string>
 
     <!-- History -->
     <string name="today">Ma</string>
