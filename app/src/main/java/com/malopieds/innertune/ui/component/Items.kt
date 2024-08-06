@@ -979,11 +979,13 @@ fun PlaylistListItem(
             }
         when (playlist.thumbnails.size) {
             0 ->
-                Icon(
-                    painter = painterResource(painter),
-                    contentDescription = null,
-                    modifier = Modifier.size(ListThumbnailSize),
-                )
+                Box(modifier = Modifier.size(ListThumbnailSize)) {
+                    Icon(
+                        painter = painterResource(painter),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp).align(Alignment.Center),
+                    )
+                }
 
             1 ->
                 AsyncImage(
@@ -1065,7 +1067,7 @@ fun PlaylistGridItem(
                         tint = LocalContentColor.current.copy(alpha = 0.8f),
                         modifier =
                             Modifier
-                                .size(width / 2)
+                                .size(48.dp)
                                 .align(Alignment.Center),
                     )
                 }
