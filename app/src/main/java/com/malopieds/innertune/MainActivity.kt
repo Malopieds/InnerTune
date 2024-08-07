@@ -227,6 +227,7 @@ class MainActivity : ComponentActivity() {
                         remember {
                             when (intent?.action) {
                                 ACTION_LIBRARY -> NavigationTab.LIBRARY
+                                ACTION_EXPLORE -> NavigationTab.EXPLORE
                                 else -> null
                             }
                         }
@@ -930,8 +931,9 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        const val ACTION_SEARCH = "com.zionhuang.music.action.SEARCH"
-        const val ACTION_LIBRARY = "com.zionhuang.music.action.LIBRARY"
+        const val ACTION_SEARCH = "com.malopieds.innertune.action.SEARCH"
+        const val ACTION_EXPLORE = "com.malopieds.innertune.action.EXPLORE"
+        const val ACTION_LIBRARY = "com.malopieds.innertune.action.LIBRARY"
     }
 }
 
