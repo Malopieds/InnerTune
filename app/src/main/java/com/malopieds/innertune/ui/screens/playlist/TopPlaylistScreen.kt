@@ -3,6 +3,7 @@ package com.malopieds.innertune.ui.screens.playlist
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -213,15 +215,24 @@ fun TopPlaylistScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
+                                Box(
+                                   modifier =
+                                       Modifier
+                                         .size(AlbumThumbnailSize)
+                                         .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                                         .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        ) { 
                                 Icon(
                                     painter = painterResource(R.drawable.trending_up),
                                     contentDescription = null,
                                     tint = LocalContentColor.current.copy(alpha = 0.8f),
                                     modifier =
                                         Modifier
-                                            .size(AlbumThumbnailSize)
+                                            .size(AlbumThumbnailSize / 2)
+                                            .align(Alignment.Center)
                                             .clip(RoundedCornerShape(ThumbnailCornerRadius)),
-                                )
+                                  )
+                                }
 
                                 Column(
                                     verticalArrangement = Arrangement.Center,
