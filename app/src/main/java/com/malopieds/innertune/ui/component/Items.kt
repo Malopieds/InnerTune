@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -979,11 +980,21 @@ fun PlaylistListItem(
             }
         when (playlist.thumbnails.size) {
             0 ->
+                Box(
+                    modifier =
+                        Modifier
+                            .size(ListThumbnailSize)
+                            .clip(RoundedCornerShape(ThumbnailCornerRadius))
+                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+            ) { 
                 Icon(
-                    painter = painterResource(painter),
-                    contentDescription = null,
-                    modifier = Modifier.size(ListThumbnailSize),
-                )
+                     painter = painterResource(painter), 
+                     contentDescription = null, 
+                     modifier = Modifier
+                         .size(ListThumbnailSize / 2)
+                         .align(Alignment.Center)
+              ) 
+                }
 
             1 ->
                 AsyncImage(
@@ -1057,7 +1068,7 @@ fun PlaylistGridItem(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .background(color = MaterialTheme.colorScheme.secondaryContainer),
+                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
                     Icon(
                         painter = painterResource(painter),
