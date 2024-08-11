@@ -8,9 +8,9 @@
     <string name="playlists">Playlists</string>
     <!-- Top bar -->
     <plurals name="n_selected">
-        <item quantity="one">%d selecionada</item>
-        <item quantity="other">%d selecionadas</item>
-        <item quantity="many">%d selecionadas</item>
+        <item quantity="one">%d selecionado</item>
+        <item quantity="many"></item>
+        <item quantity="other">%d selecionados</item>
     </plurals>
     <!-- Home -->
     <string name="history">Histórico</string>
@@ -19,7 +19,7 @@
     <string name="account">Conta</string>
     <string name="quick_picks">Escolhas rápidas</string>
     <string name="quick_picks_empty">Escute mais para gerar suas escolhas rápidas</string>
-    <string name="new_release_albums">Novos lançamentos de álbuns</string>
+    <string name="new_release_albums">Novos álbuns lançados</string>
     <!-- History -->
     <string name="today">Hoje</string>
     <string name="yesterday">Ontem</string>
@@ -44,12 +44,12 @@
     <string name="filter_playlists">Playlists</string>
     <string name="filter_community_playlists">Playlists da comunidade</string>
     <string name="filter_featured_playlists">Playlists em destaque</string>
-    <string name="filter_bookmarked">Favoritadas</string>
+    <string name="filter_bookmarked">Salvas</string>
     <string name="no_results_found">Nenhum resultado encontrado</string>
     <!-- Artist screen -->
     <string name="from_your_library">Da sua biblioteca</string>
     <!-- Playlist -->
-    <string name="liked_songs">Músicas favoritas</string>
+    <string name="liked_songs">Músicas curtidas</string>
     <string name="downloaded_songs">Músicas baixadas</string>
     <string name="playlist_is_empty">Esta playlist está vazia</string>
     <!-- Button -->
@@ -92,7 +92,7 @@
     <!-- Dialog -->
     <string name="media_id">ID de mídia</string>
     <string name="mime_type">Tipo do MIME</string>
-    <string name="codecs">Codificações</string>
+    <string name="codecs">Codificadores</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="sample_rate">Taxa de amostragem</string>
     <string name="loudness">Volume</string>
@@ -119,43 +119,43 @@
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d música</item>
+        <item quantity="many"></item>
         <item quantity="other">%d músicas</item>
-        <item quantity="many">%d músicas</item>
     </plurals>
     <plurals name="n_artist">
         <item quantity="one">%d artista</item>
+        <item quantity="many"></item>
         <item quantity="other">%d artistas</item>
-        <item quantity="many">%d artistas</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d álbum</item>
+        <item quantity="many"></item>
         <item quantity="other">%d álbuns</item>
-        <item quantity="many">%d álbuns</item>
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d playlist</item>
+        <item quantity="many"></item>
         <item quantity="other">%d playlists</item>
-        <item quantity="many">%d playlists</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d semana</item>
-        <item quantity="many">%d semanas</item>
+        <item quantity="many"></item>
         <item quantity="other">%d semanas</item>
     </plurals>
     <plurals name="n_month">
         <item quantity="one">%d mês</item>
-        <item quantity="many">%d meses</item>
+        <item quantity="many"></item>
         <item quantity="other">%d meses</item>
     </plurals>
     <plurals name="n_year">
         <item quantity="one">%d ano</item>
-        <item quantity="many">%d anos</item>
+        <item quantity="many"></item>
         <item quantity="other">%d anos</item>
     </plurals>
     <!-- Snackbar -->
-    <string name="playlist_imported">Playlist importada</string>
+    <string name="playlist_imported">A playlist foi importada</string>
     <string name="removed_song_from_playlist">\"%s\" removido da playlist</string>
-    <string name="playlist_synced">Playlist sincronizada</string>
+    <string name="playlist_synced">A playlist foi sincronizada</string>
     <string name="undo">Desfazer</string>
     <!-- Player -->
     <string name="lyrics_not_found">Letras não encontradas</string>
@@ -163,7 +163,7 @@
     <string name="end_of_song">Fim da música</string>
     <plurals name="minute">
         <item quantity="one">%d minuto</item>
-        <item quantity="many">%d minutos</item>
+        <item quantity="many"></item>
         <item quantity="other">%d minutos</item>
     </plurals>
     <string name="error_no_stream">Nenhum canal de reprodução disponível</string>
@@ -235,7 +235,7 @@
     <string name="pause_search_history">Pausar histórico de pesquisa</string>
     <string name="clear_search_history">Limpar histórico de pesquisa</string>
     <string name="clear_search_history_confirm">Tem certeza que deseja limpar todo o seu histórico de pesquisa?</string>
-    <string name="enable_kugou">Ativar o provedor de letras \"KuGou\"</string>
+    <string name="enable_kugou">Ativar o fornecedor de letras KuGou</string>
     <string name="backup_restore">Backup e restauração</string>
     <string name="backup">Fazer backup</string>
     <string name="restore">Restaurar</string>
@@ -250,4 +250,11 @@
     <string name="clear_translation_models">Limpar modelos de tradução</string>
     <string name="remove_download_playlist_confirm">Você deseja realmente remover as músicas da playlist \"%s\" do armazenamento de Músicas Baixadas?</string>
     <string name="delete_playlist_confirm">Você deseja realmente excluir a playlist \"%s\"?</string>
+    <string name="remove_from_playlist">Remover da playlist</string>
+    <string name="skip_duplicates">Pular duplicados</string>
+    <string name="enable_lrclib">Ativar o provedor de letras LrcLib</string>
+    <string name="duplicates">Duplicados</string>
+    <string name="add_anyway">Adicionar mesmo assim</string>
+    <string name="duplicates_description_single">Esta música já está na sua playlist</string>
+    <string name="duplicates_description_multiple">%d músicas já estão na sua playlist</string>
 </resources>
