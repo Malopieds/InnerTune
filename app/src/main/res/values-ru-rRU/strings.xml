@@ -92,6 +92,7 @@
     <string name="share">Поделиться</string>
     <string name="delete">Удалить</string>
     <string name="remove_from_history">Удалить из истории</string>
+    <string name="remove_from_playlist">Удалить из плейлиста</string>
     <string name="search_online">Поиск в Интернете</string>
     <string name="sync">Синхронизировать</string>
     <string name="advanced">Контроль аудио</string>
@@ -137,6 +138,12 @@
     <string name="edit_artist">Редактировать исполнителя</string>
     <string name="artist_name">Имя исполнителя</string>
     <string name="error_artist_name_empty">Укажите имя исполнителя</string>
+
+    <string name="duplicates">Дубликаты</string>
+    <string name="skip_duplicates">Пропустить дубликаты</string>
+    <string name="add_anyway">Добавить в любом случае</string>
+    <string name="duplicates_description_single">Эта песня уже в вашем плейлисте</string>
+    <string name="duplicates_description_multiple">%d песен уже в вашем плейлисте</string>
 
     <!-- Noun -->
     <plurals name="n_song">
@@ -275,6 +282,7 @@
     <string name="pause_search_history">Приостановить историю поиска</string>
     <string name="clear_search_history">Очистить историю поиска</string>
     <string name="clear_search_history_confirm">Вы уверены, что хотите очистить всю историю поиска?</string>
+    <string name="enable_lrclib">Включить провайдера текстов LrcLib</string>
     <string name="enable_kugou">Включить провайдера текстов KuGou</string>
 
     <string name="backup_restore">Резервное копирование</string>
