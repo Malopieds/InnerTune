@@ -88,6 +88,7 @@
     <string name="share">Поділитися</string>
     <string name="delete">Видалити</string>
     <string name="remove_from_history">Видалити з історії</string>
+    <string name="remove_from_playlist">Видалити з плейлиста</string>
     <string name="search_online">Пошук в Інтернеті</string>
     <string name="sync">Синхронізувати</string>
     <string name="advanced">Контроль аудіо</string>
@@ -133,6 +134,12 @@
     <string name="edit_artist">Редагувати виконавця</string>
     <string name="artist_name">Ім\'я виконавця</string>
     <string name="error_artist_name_empty">Вкажіть ім\'я виконавця</string>
+
+    <string name="duplicates">Дублікати</string>
+    <string name="skip_duplicates">Пропустити дублікати</string>
+    <string name="add_anyway">Додати в будь-якому разі</string>
+    <string name="duplicates_description_single">Ця пісня вже у вашому плейлисті</string>
+    <string name="duplicates_description_multiple">%d пісень вже у вашому плейлисті</string>
 
     <!-- Noun -->
     <plurals name="n_song">
@@ -271,6 +278,7 @@
     <string name="pause_search_history">Призупинити історію пошуку</string>
     <string name="clear_search_history">Очистити історію пошуку</string>
     <string name="clear_search_history_confirm">Ви впевнені, що хочете очистити всю історію пошуку?</string>
+    <string name="enable_lrclib">Увімкнути провайдера текстів LrcLib</string>
     <string name="enable_kugou">Увімкнути провайдера текстів KuGou</string>
 
     <string name="backup_restore">Резервне копіювання</string>
