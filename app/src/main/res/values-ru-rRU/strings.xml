@@ -295,7 +295,7 @@
     <string name="restore_failed">Не удалось восстановить резервную копию</string>
 
     <string name="discord_integration">Интеграция с Discord</string>
-    <string name="discord_information">Вы можете безопасно войти в систему. InnerTune извлекает только ваш токен, а все остальное хранится локально.</string>
+    <string name="discord_information">Вы можете безопасно войти в систему. InnerTune извлечет только ваш токен, а все остальное хранится локально.</string>
     <string name="dismiss">Закрыть</string>
     <string name="options">Настройки</string>
     <string name="preview">Предпросмотр</string>
