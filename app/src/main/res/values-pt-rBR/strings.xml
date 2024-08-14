@@ -9,7 +9,7 @@
     <!-- Top bar -->
     <plurals name="n_selected">
         <item quantity="one">%d selecionado</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d selecionados</item>
         <item quantity="other">%d selecionados</item>
     </plurals>
     <!-- Home -->
@@ -34,7 +34,7 @@
     <string name="search_yt_music">Pesquisar no YouTube Music…</string>
     <string name="search_library">Pesquisar na biblioteca…</string>
     <string name="filter_library">Biblioteca</string>
-    <string name="filter_liked">Curtidas</string>
+    <string name="filter_liked">Curtidos</string>
     <string name="filter_downloaded">Baixados</string>
     <string name="filter_all">Tudo</string>
     <string name="filter_songs">Músicas</string>
@@ -44,7 +44,7 @@
     <string name="filter_playlists">Playlists</string>
     <string name="filter_community_playlists">Playlists da comunidade</string>
     <string name="filter_featured_playlists">Playlists em destaque</string>
-    <string name="filter_bookmarked">Salvas</string>
+    <string name="filter_bookmarked">Salvos</string>
     <string name="no_results_found">Nenhum resultado encontrado</string>
     <!-- Artist screen -->
     <string name="from_your_library">Da sua biblioteca</string>
@@ -78,10 +78,10 @@
     <string name="delete">Excluir</string>
     <string name="remove_from_history">Remover do histórico</string>
     <string name="search_online">Buscar online</string>
-    <string name="sync">Sincronização</string>
+    <string name="sync">Sincronizar</string>
     <string name="advanced">Avançado</string>
     <!-- Sort menu -->
-    <string name="sort_by_create_date">Data adicionada</string>
+    <string name="sort_by_create_date">Quando adicionado</string>
     <string name="sort_by_name">Nome</string>
     <string name="sort_by_artist">Artista</string>
     <string name="sort_by_year">Ano</string>
@@ -119,37 +119,37 @@
     <!-- Noun -->
     <plurals name="n_song">
         <item quantity="one">%d música</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d músicas</item>
         <item quantity="other">%d músicas</item>
     </plurals>
     <plurals name="n_artist">
         <item quantity="one">%d artista</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d artistas</item>
         <item quantity="other">%d artistas</item>
     </plurals>
     <plurals name="n_album">
         <item quantity="one">%d álbum</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d álbuns</item>
         <item quantity="other">%d álbuns</item>
     </plurals>
     <plurals name="n_playlist">
         <item quantity="one">%d playlist</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d playlists</item>
         <item quantity="other">%d playlists</item>
     </plurals>
     <plurals name="n_week">
         <item quantity="one">%d semana</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d semanas</item>
         <item quantity="other">%d semanas</item>
     </plurals>
     <plurals name="n_month">
         <item quantity="one">%d mês</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d meses</item>
         <item quantity="other">%d meses</item>
     </plurals>
     <plurals name="n_year">
         <item quantity="one">%d ano</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d anos</item>
         <item quantity="other">%d anos</item>
     </plurals>
     <!-- Snackbar -->
@@ -163,7 +163,7 @@
     <string name="end_of_song">Fim da música</string>
     <plurals name="minute">
         <item quantity="one">%d minuto</item>
-        <item quantity="many"></item>
+        <item quantity="many">%d minutos</item>
         <item quantity="other">%d minutos</item>
     </plurals>
     <string name="error_no_stream">Nenhum canal de reprodução disponível</string>
@@ -171,8 +171,8 @@
     <string name="error_timeout">Tempo esgotado</string>
     <string name="error_unknown">Erro desconhecido</string>
     <!-- Player action -->
-    <string name="action_like">Favoritar</string>
-    <string name="action_remove_like">Remover dos favoritos</string>
+    <string name="action_like">Curtir</string>
+    <string name="action_remove_like">Remover dos curtidos</string>
     <string name="action_shuffle_on">Modo aleatório ativado</string>
     <string name="action_shuffle_off">Modo aleatório desativado</string>
     <string name="repeat_mode_off">Repetição desativada</string>
