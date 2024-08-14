@@ -244,6 +244,7 @@
 
     <string name="content">Контент</string>
     <string name="login">Логин</string>
+    <string name="not_logged_in">Не авторизовано</string>
     <string name="content_language">Язык контента</string>
     <string name="content_country">Страна контента</string>
     <string name="system_default">По умолчанию системы</string>
@@ -292,6 +293,15 @@
     <string name="backup_create_success">Резервная копия создана успешно</string>
     <string name="backup_create_failed">Не удалось создать резервную копию</string>
     <string name="restore_failed">Не удалось восстановить резервную копию</string>
+
+    <string name="discord_integration">Интеграция с Discord</string>
+    <string name="discord_information">Вы можете безопасно войти в систему. InnerTune извлекает только ваш токен, а все остальное хранится локально.</string>
+    <string name="dismiss">Закрыть</string>
+    <string name="options">Настройки</string>
+    <string name="preview">Предпросмотр</string>
+    <string name="login_failed">Ошибка входа</string>
+    <string name="logout">Выйти</string>
+    <string name="enable_discord_rpc">Включить Rich Presence</string>
 
     <string name="about">О приложении</string>
     <string name="app_version">Версия приложения</string>
