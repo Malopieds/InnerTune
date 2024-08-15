@@ -233,7 +233,9 @@
     <string name="pure_black">Режим чистого чорного кольору</string>
     <string name="default_open_tab">Вкладка навігації за замовчуванням</string>
     <string name="customize_navigation_tabs">Налаштування вкладок навігації</string>
+    <string name="player_text_alignment">Вирівнювання тексту плеєра</string>
     <string name="lyrics_text_position">Розташування тексту пісні</string>
+    <string name="sided">Збоку</string>
     <string name="left">Ліворуч</string>
     <string name="center">По центру</string>
     <string name="right">Праворуч</string>
