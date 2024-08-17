@@ -287,6 +287,7 @@
     <string name="clear_search_history_confirm">Вы уверены, что хотите очистить всю историю поиска?</string>
     <string name="enable_lrclib">Включить провайдера текстов LrcLib</string>
     <string name="enable_kugou">Включить провайдера текстов KuGou</string>
+    <string name="hide_explicit">Скрывать контент с нецензурной лексикой</string>
 
     <string name="backup_restore">Резервное копирование</string>
     <string name="backup">Создать резервную копию</string>
