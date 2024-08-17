@@ -283,6 +283,7 @@
     <string name="clear_search_history_confirm">Ви впевнені, що хочете очистити всю історію пошуку?</string>
     <string name="enable_lrclib">Увімкнути провайдера текстів LrcLib</string>
     <string name="enable_kugou">Увімкнути провайдера текстів KuGou</string>
+    <string name="hide_explicit">Приховувати контент із нецензурною лексикою</string>
 
     <string name="backup_restore">Резервне копіювання</string>
     <string name="backup">Створити резервну копію</string>
