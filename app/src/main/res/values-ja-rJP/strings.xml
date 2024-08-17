@@ -230,6 +230,7 @@
     <string name="follow_theme">テーマに従う</string>
     <string name="gradient">グラデーション</string>
     <string name="enable_squiggly_slider">波状のスライダーの有効化</string>
+    <string name="enable_swipe_thumbnail">サムネイルをスワイプして曲を変更する</string>
     <string name="pure_black">真っ黒</string>
     <string name="default_open_tab">起動時に開くタブ</string>
     <string name="customize_navigation_tabs">ナビゲーションタブのカスタマイズ</string>
@@ -237,6 +238,10 @@
     <string name="left">左</string>
     <string name="center">中央</string>
     <string name="right">右</string>
+    <string name="lyrics_click_change">歌詞を選択して再生位置を変更する</string>
+    <string name="grid_cell_size">グリッド表示のサイズ</string>
+    <string name="small">小さい</string>
+    <string name="big">大きい</string>
 
     <string name="content">コンテンツ</string>
     <string name="login">ログイン</string>
@@ -282,8 +287,9 @@
     <string name="pause_search_history">検索履歴の記録を一時停止</string>
     <string name="clear_search_history">検索履歴を削除</string>
     <string name="clear_search_history_confirm">すべての検索履歴を削除しますか？</string>
-    <string name="enable_kugou">酷狗 (Kugou) からの歌詞取得を有効化</string>
-    <string name="enable_lrclib">LrcLib からの歌詞取得の有効化</string>
+    <string name="enable_kugou">KuGou からの歌詞の取得を有効化</string>
+    <string name="enable_lrclib">LrcLib からの歌詞の取得を有効化</string>
+    <string name="set_first_lyrics_provider">優先される歌詞の取得元</string>
 
     <string name="backup_restore">バックアップと復元</string>
     <string name="backup">バックアップ</string>
