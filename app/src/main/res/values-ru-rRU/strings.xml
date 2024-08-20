@@ -243,6 +243,9 @@
     <string name="left">Слева</string>
     <string name="center">По центру</string>
     <string name="right">Справа</string>
+    <string name="player_slider_style">Стиль ползунка плеера</string>
+    <string name="default_">По умолчанию</string>
+    <string name="squiggly">Волнистый</string>
 
     <string name="content">Контент</string>
     <string name="login">Логин</string>
