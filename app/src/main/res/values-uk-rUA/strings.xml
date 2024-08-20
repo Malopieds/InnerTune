@@ -231,7 +231,7 @@
     <string name="dark_theme_off">Вимк.</string>
     <string name="dark_theme_follow_system">Використовувати налаштування системи</string>
     <string name="pure_black">Режим чистого чорного кольору</string>
-    <string name="default_open_tab">Вкладка навігації за замовчуванням</string>
+    <string name="default_open_tab">Основна вкладка навігації</string>
     <string name="customize_navigation_tabs">Налаштування вкладок навігації</string>
     <string name="player_text_alignment">Вирівнювання тексту плеєра</string>
     <string name="lyrics_text_position">Розташування тексту пісні</string>
@@ -239,6 +239,9 @@
     <string name="left">Ліворуч</string>
     <string name="center">По центру</string>
     <string name="right">Праворуч</string>
+    <string name="player_slider_style">Стиль повзунка плеєра</string>
+    <string name="default_">Стандартний</string>
+    <string name="squiggly">Хвилястий</string>
 
     <string name="content">Контент</string>
     <string name="login">Логін</string>
