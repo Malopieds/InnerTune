@@ -217,7 +217,7 @@
     <string name="pure_black">Negro puro</string>
     <string name="player_text_alignment">Alineamiento del reproductor</string>
     <string name="lyrics_text_position">Posicion del texto de la letra de la cancion.</string>
-    <string name="sided">Sided</string>
+    <string name="sided">De lado</string>
     <string name="player_slider_style">Estilo del reproductor</string>
     <string name="default_open_tab">Pestaña de inicio por defecto</string>
     <string name="customize_navigation_tabs">Personalizar pestañas de navegación</string>
