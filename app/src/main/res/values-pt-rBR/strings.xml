@@ -269,4 +269,7 @@
     <string name="sided">Ao lado</string>
     <string name="hide_explicit">Esconder conteúdo explícito</string>
     <string name="player_text_alignment">Alinhamento do texto do reprodutor</string>
+    <string name="player_slider_style">Estilo do slider do reprodutor</string>
+    <string name="default_">Padrão</string>
+    <string name="squiggly">Cobrinha</string>
 </resources>
