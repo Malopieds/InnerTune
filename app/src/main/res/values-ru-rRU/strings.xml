@@ -96,6 +96,7 @@
     <string name="search_online">Поиск в Интернете</string>
     <string name="sync">Синхронизировать</string>
     <string name="advanced">Контроль аудио</string>
+    <string name="tempo_and_pitch">Темп и высота тона</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Недавно добавленные</string>
@@ -229,14 +230,15 @@
     <!-- Settings -->
     <string name="settings">Настройки</string>
     <string name="appearance">Внешний вид</string>
+    <string name="theme">Тема</string>
     <string name="enable_dynamic_theme">Включить динамическую тему</string>
     <string name="dark_theme">Темная тема</string>
     <string name="dark_theme_on">Вкл.</string>
     <string name="dark_theme_off">Выкл.</string>
     <string name="dark_theme_follow_system">Использовать настройки системы</string>
     <string name="pure_black">Режим чистого черного цвета</string>
-    <string name="default_open_tab">Вкладка навигации по умолчанию</string>
     <string name="customize_navigation_tabs">Настройка вкладок навигации</string>
+    <string name="player">Плеер</string>
     <string name="player_text_alignment">Выравнивание текста плеера</string>
     <string name="lyrics_text_position">Расположение текста песни</string>
     <string name="sided">Сбоку</string>
@@ -246,6 +248,8 @@
     <string name="player_slider_style">Стиль ползунка плеера</string>
     <string name="default_">По умолчанию</string>
     <string name="squiggly">Волнистый</string>
+    <string name="misc">Разное</string>
+    <string name="default_open_tab">Вкладка навигации по умолчанию</string>
 
     <string name="content">Контент</string>
     <string name="login">Логин</string>
@@ -301,7 +305,7 @@
     <string name="restore_failed">Не удалось восстановить резервную копию</string>
 
     <string name="discord_integration">Интеграция с Discord</string>
-    <string name="discord_information">Вы можете безопасно войти в систему. InnerTune извлечет только ваш токен, а все остальное хранится локально.</string>
+    <string name="discord_information">InnerTune использует библиотеку KizzyRPC для установки статуса вашего аккаунта Discord. Это включает использование соединения через Discord Gateway, что может считаться нарушением условий использования Discord. Однако, на данный момент нет известных случаев блокировки учетных записей пользователей по этой причине. Используйте на свой страх и риск.\n\nInnerTune будет извлекать только ваш токен, а все остальное хранится локально.</string>
     <string name="dismiss">Закрыть</string>
     <string name="options">Настройки</string>
     <string name="preview">Предпросмотр</string>
