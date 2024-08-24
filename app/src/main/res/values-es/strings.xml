@@ -216,7 +216,6 @@
     <string name="dark_theme_follow_system">Seguir el sistema</string>
     <string name="pure_black">Negro puro</string>
     <string name="player_text_alignment">Alineamiento del reproductor</string>
-    <string name="lyrics_text_position">Posicion del texto de la letra de la cancion.</string>
     <string name="sided">De lado</string>
     <string name="player_slider_style">Estilo del reproductor</string>
     <string name="default_open_tab">Pestaña de inicio por defecto</string>
