@@ -47,18 +47,20 @@ class HistoryViewModel
                                     is DateAgo.Other -> ChronoUnit.DAYS.between(dateAgo.date, today)
                                 }
                             },
-                        )
+                        ).mapValues { entry ->
+                            entry.value.distinctBy { it.song.id }
+                        }
                 }.stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
     }
 
 sealed class DateAgo {
-    object Today : DateAgo()
+    data object Today : DateAgo()
 
-    object Yesterday : DateAgo()
+    data object Yesterday : DateAgo()
 
-    object ThisWeek : DateAgo()
+    data object ThisWeek : DateAgo()
 
-    object LastWeek : DateAgo()
+    data object LastWeek : DateAgo()
 
     class Other(
         val date: LocalDate,

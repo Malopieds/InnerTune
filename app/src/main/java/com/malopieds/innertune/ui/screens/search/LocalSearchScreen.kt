@@ -22,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -54,7 +53,7 @@ import com.malopieds.innertune.viewmodels.LocalFilter
 import com.malopieds.innertune.viewmodels.LocalSearchViewModel
 import kotlinx.coroutines.flow.drop
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LocalSearchScreen(
     query: String,
@@ -98,6 +97,7 @@ fun LocalSearchScreen(
                 ),
             currentValue = searchFilter,
             onValueUpdate = { viewModel.filter.value = it },
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         )
 
         LazyColumn(

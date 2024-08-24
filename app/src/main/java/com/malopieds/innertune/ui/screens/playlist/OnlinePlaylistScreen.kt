@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +66,7 @@ import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.AlbumThumbnailSize
+import com.malopieds.innertune.constants.HideExplicitKey
 import com.malopieds.innertune.constants.ThumbnailCornerRadius
 import com.malopieds.innertune.db.entities.PlaylistEntity
 import com.malopieds.innertune.db.entities.PlaylistSongMap
@@ -87,10 +89,11 @@ import com.malopieds.innertune.ui.menu.YouTubePlaylistMenu
 import com.malopieds.innertune.ui.menu.YouTubeSongMenu
 import com.malopieds.innertune.ui.utils.ItemWrapper
 import com.malopieds.innertune.ui.utils.backToMain
+import com.malopieds.innertune.utils.rememberPreference
 import com.malopieds.innertune.viewmodels.OnlinePlaylistViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun OnlinePlaylistScreen(
     navController: NavController,
@@ -112,6 +115,7 @@ fun OnlinePlaylistScreen(
     var selection by remember {
         mutableStateOf(false)
     }
+    val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -256,6 +260,7 @@ fun OnlinePlaylistScreen(
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Button(
                                     onClick = {
+                                        playerConnection.service.getAutomix(playlistId = playlist.id)
                                         playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint))
                                     },
                                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -297,7 +302,7 @@ fun OnlinePlaylistScreen(
                         ) {
                             if (selection) {
                                 val count = wrappedSongs.count { it.isSelected }
-                                Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
+                                Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs.size) {
@@ -387,11 +392,13 @@ fun OnlinePlaylistScreen(
                             modifier =
                                 Modifier
                                     .combinedClickable(
+                                        enabled = !hideExplicit || !song.item.explicit,
                                         onClick = {
                                             if (!selection) {
                                                 if (song.item.id == mediaMetadata?.id) {
                                                     playerConnection.player.togglePlayPause()
                                                 } else {
+                                                    playerConnection.service.getAutomix(playlistId = playlist.id)
                                                     playerConnection.playQueue(
                                                         YouTubeQueue(
                                                             song.item.endpoint
@@ -414,7 +421,8 @@ fun OnlinePlaylistScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).alpha(if (hideExplicit && song.item.explicit) 0.3f else 1f)
+                                    .animateItem(),
                         )
                     }
                 } else {

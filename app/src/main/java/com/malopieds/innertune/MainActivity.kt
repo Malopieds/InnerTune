@@ -13,18 +13,42 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,18 +76,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertube.models.SongItem
 import com.malopieds.innertube.models.WatchEndpoint
 import com.malopieds.innertune.constants.*
+import com.malopieds.innertune.constants.DarkModeKey
+import com.malopieds.innertune.constants.DefaultOpenTabKey
+import com.malopieds.innertune.constants.DynamicThemeKey
+import com.malopieds.innertune.constants.PauseSearchHistoryKey
+import com.malopieds.innertune.constants.PureBlackKey
+import com.malopieds.innertune.constants.SearchSource
+import com.malopieds.innertune.constants.SearchSourceKey
 import com.malopieds.innertune.db.MusicDatabase
 import com.malopieds.innertune.db.entities.SearchHistory
 import com.malopieds.innertune.extensions.*
@@ -74,33 +102,28 @@ import com.malopieds.innertune.playback.MusicService.MusicBinder
 import com.malopieds.innertune.playback.PlayerConnection
 import com.malopieds.innertune.playback.queues.YouTubeQueue
 import com.malopieds.innertune.ui.component.*
+import com.malopieds.innertune.ui.component.rememberBottomSheetState
 import com.malopieds.innertune.ui.component.shimmer.ShimmerTheme
 import com.malopieds.innertune.ui.menu.YouTubeSongMenu
 import com.malopieds.innertune.ui.player.BottomSheetPlayer
 import com.malopieds.innertune.ui.screens.*
-import com.malopieds.innertune.ui.screens.artist.ArtistItemsScreen
-import com.malopieds.innertune.ui.screens.artist.ArtistScreen
-import com.malopieds.innertune.ui.screens.artist.ArtistSongsScreen
-import com.malopieds.innertune.ui.screens.library.LibraryScreen
-import com.malopieds.innertune.ui.screens.playlist.AutoPlaylistScreen
-import com.malopieds.innertune.ui.screens.playlist.LocalPlaylistScreen
-import com.malopieds.innertune.ui.screens.playlist.OnlinePlaylistScreen
-import com.malopieds.innertune.ui.screens.playlist.TopPlaylistScreen
+import com.malopieds.innertune.ui.screens.navigationBuilder
 import com.malopieds.innertune.ui.screens.search.LocalSearchScreen
-import com.malopieds.innertune.ui.screens.search.OnlineSearchResult
 import com.malopieds.innertune.ui.screens.search.OnlineSearchScreen
 import com.malopieds.innertune.ui.screens.settings.*
-import com.malopieds.innertune.ui.theme.*
+import com.malopieds.innertune.ui.theme.ColorSaver
+import com.malopieds.innertune.ui.theme.DefaultThemeColor
+import com.malopieds.innertune.ui.theme.InnerTuneTheme
+import com.malopieds.innertune.ui.theme.extractThemeColor
 import com.malopieds.innertune.ui.utils.appBarScrollBehavior
 import com.malopieds.innertune.ui.utils.backToMain
-import com.malopieds.innertune.ui.utils.canNavigateUp
 import com.malopieds.innertune.ui.utils.resetHeightOffset
+import com.malopieds.innertune.utils.Updater
 import com.malopieds.innertune.utils.dataStore
 import com.malopieds.innertune.utils.get
 import com.malopieds.innertune.utils.rememberEnumPreference
 import com.malopieds.innertune.utils.rememberPreference
 import com.malopieds.innertune.utils.reportException
-import com.malopieds.innertune.utils.setupRemoteConfig
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -110,6 +133,7 @@ import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.net.URLEncoder
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -136,7 +160,8 @@ class MainActivity : ComponentActivity() {
                 playerConnection = null
             }
         }
-    var latestVersion by mutableStateOf(BuildConfig.VERSION_CODE.toLong())
+
+    private var latestVersionName by mutableStateOf(BuildConfig.VERSION_NAME)
 
     override fun onStart() {
         super.onStart()
@@ -155,9 +180,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        setupRemoteConfig()
-
         setContent {
+            LaunchedEffect(Unit) {
+                if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                    Updater.getLatestVersionName().onSuccess {
+                        latestVersionName = it
+                    }
+                }
+            }
+
             val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
             val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
             val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
@@ -208,7 +239,7 @@ class MainActivity : ComponentActivity() {
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background),
+                            .background(MaterialTheme.colorScheme.surface),
                 ) {
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
@@ -227,9 +258,18 @@ class MainActivity : ComponentActivity() {
                         remember {
                             when (intent?.action) {
                                 ACTION_LIBRARY -> NavigationTab.LIBRARY
+                                ACTION_EXPLORE -> NavigationTab.EXPLORE
                                 else -> null
                             }
                         }
+
+                    val topLevelScreens =
+                        listOf(
+                            Screens.Home.route,
+                            Screens.Explore.route,
+                            Screens.Library.route,
+                            "settings",
+                        )
 
                     val (query, onQueryChange) =
                         rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -302,7 +342,14 @@ class MainActivity : ComponentActivity() {
                                 .add(WindowInsets(top = AppBarHeight, bottom = bottom))
                         }
 
-                    val scrollBehavior =
+                    val searchBarScrollBehavior =
+                        appBarScrollBehavior(
+                            canScroll = {
+                                navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
+                                    (playerBottomSheetState.isCollapsed || playerBottomSheetState.isDismissed)
+                            },
+                        )
+                    val topAppBarScrollBehavior =
                         appBarScrollBehavior(
                             canScroll = {
                                 navBackStackEntry?.destination?.route?.startsWith("search/") == false &&
@@ -334,11 +381,13 @@ class MainActivity : ComponentActivity() {
                         } else if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }) {
                             onQueryChange(TextFieldValue())
                         }
-                        scrollBehavior.state.resetHeightOffset()
+                        searchBarScrollBehavior.state.resetHeightOffset()
+                        topAppBarScrollBehavior.state.resetHeightOffset()
                     }
                     LaunchedEffect(active) {
                         if (active) {
-                            scrollBehavior.state.resetHeightOffset()
+                            searchBarScrollBehavior.state.resetHeightOffset()
+                            topAppBarScrollBehavior.state.resetHeightOffset()
                         }
                     }
 
@@ -440,7 +489,7 @@ class MainActivity : ComponentActivity() {
 
                     CompositionLocalProvider(
                         LocalDatabase provides database,
-                        LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
+                        LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.surface),
                         LocalPlayerConnection provides playerConnection,
                         LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                         LocalDownloadUtil provides downloadUtil,
@@ -454,191 +503,56 @@ class MainActivity : ComponentActivity() {
                                     NavigationTab.EXPLORE -> Screens.Explore
                                     NavigationTab.LIBRARY -> Screens.Library
                                 }.route,
-                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        ) {
-                            composable(
-                                Screens.Home.route,
-                            ) {
-                                HomeScreen(navController)
-                            }
-                            composable(
-                                Screens.Library.route,
-                            ) {
-                                LibraryScreen(navController)
-                            }
-                            composable(Screens.Explore.route) {
-                                ExploreScreen(navController)
-                            }
-                            composable("history") {
-                                HistoryScreen(navController)
-                            }
-                            composable("stats") {
-                                StatsScreen(navController)
-                            }
-                            composable("mood_and_genres") {
-                                MoodAndGenresScreen(navController, scrollBehavior)
-                            }
-                            composable("account") {
-                                AccountScreen(navController, scrollBehavior)
-                            }
-                            composable("new_release") {
-                                NewReleaseScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "search/{query}",
-                                arguments =
-                                    listOf(
-                                        navArgument("query") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                OnlineSearchResult(navController)
-                            }
-                            composable(
-                                route = "album/{albumId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("albumId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                AlbumScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "artist/{artistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) { backStackEntry ->
-                                val artistId = backStackEntry.arguments?.getString("artistId")!!
-                                if (artistId.startsWith("LA")) {
-                                    ArtistSongsScreen(navController, scrollBehavior)
+                            enterTransition = {
+                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                    fadeIn(tween(250))
                                 } else {
-                                    ArtistScreen(navController, scrollBehavior)
+                                    fadeIn(tween(250)) + slideInHorizontally { it / 2 }
                                 }
-                            }
-                            composable(
-                                route = "artist/{artistId}/songs",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                ArtistSongsScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "artist/{artistId}/items?browseId={browseId}?params={params}",
-                                arguments =
-                                    listOf(
-                                        navArgument("artistId") {
-                                            type = NavType.StringType
-                                        },
-                                        navArgument("browseId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                        navArgument("params") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                    ),
-                            ) {
-                                ArtistItemsScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "online_playlist/{playlistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                OnlinePlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "local_playlist/{playlistId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlistId") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                LocalPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "auto_playlist/{playlist}",
-                                arguments =
-                                    listOf(
-                                        navArgument("playlist") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                AutoPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "top_playlist/{top}",
-                                arguments =
-                                    listOf(
-                                        navArgument("top") {
-                                            type = NavType.StringType
-                                        },
-                                    ),
-                            ) {
-                                TopPlaylistScreen(navController, scrollBehavior)
-                            }
-                            composable(
-                                route = "youtube_browse/{browseId}?params={params}",
-                                arguments =
-                                    listOf(
-                                        navArgument("browseId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                        navArgument("params") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                    ),
-                            ) {
-                                YouTubeBrowseScreen(navController, scrollBehavior)
-                            }
-                            composable("settings") {
-                                SettingsScreen(latestVersion, navController, scrollBehavior)
-                            }
-                            composable("settings/appearance") {
-                                AppearanceSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/content") {
-                                ContentSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/player") {
-                                PlayerSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/storage") {
-                                StorageSettings(navController, scrollBehavior)
-                            }
-                            composable("settings/privacy") {
-                                PrivacySettings(navController, scrollBehavior)
-                            }
-                            composable("settings/backup_restore") {
-                                BackupAndRestore(navController, scrollBehavior)
-                            }
-                            composable("settings/about") {
-                                AboutScreen(navController, scrollBehavior)
-                            }
-                            composable("login") {
-                                LoginScreen(navController)
-                            }
+                            },
+                            exitTransition = {
+                                if (initialState.destination.route in topLevelScreens && targetState.destination.route in topLevelScreens) {
+                                    fadeOut(tween(200))
+                                } else {
+                                    fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
+                                }
+                            },
+                            popEnterTransition = {
+                                if ((
+                                        initialState.destination.route in topLevelScreens ||
+                                            initialState.destination.route?.startsWith("search/") == true
+                                    ) &&
+                                    targetState.destination.route in topLevelScreens
+                                ) {
+                                    fadeIn(tween(250))
+                                } else {
+                                    fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
+                                }
+                            },
+                            popExitTransition = {
+                                if ((
+                                        initialState.destination.route in topLevelScreens ||
+                                            initialState.destination.route?.startsWith("search/") == true
+                                    ) &&
+                                    targetState.destination.route in topLevelScreens
+                                ) {
+                                    fadeOut(tween(200))
+                                } else {
+                                    fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
+                                }
+                            },
+                            modifier =
+                                Modifier.nestedScroll(
+                                    if (navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } ||
+                                        navBackStackEntry?.destination?.route?.startsWith("search/") == true
+                                    ) {
+                                        searchBarScrollBehavior.nestedScrollConnection
+                                    } else {
+                                        topAppBarScrollBehavior.nestedScrollConnection
+                                    },
+                                ),
+                        ) {
+                            navigationBuilder(navController, topAppBarScrollBehavior, latestVersionName)
                         }
 
                         AnimatedVisibility(
@@ -652,7 +566,7 @@ class MainActivity : ComponentActivity() {
                                 onSearch = onSearch,
                                 active = active,
                                 onActiveChange = onActiveChange,
-                                scrollBehavior = scrollBehavior,
+                                scrollBehavior = searchBarScrollBehavior,
                                 placeholder = {
                                     Text(
                                         text =
@@ -673,8 +587,7 @@ class MainActivity : ComponentActivity() {
                                         onClick = {
                                             when {
                                                 active -> onActiveChange(false)
-                                                navController.canNavigateUp &&
-                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.navigateUp()
                                                 }
 
@@ -684,8 +597,7 @@ class MainActivity : ComponentActivity() {
                                         onLongClick = {
                                             when {
                                                 active -> {}
-                                                navController.canNavigateUp &&
-                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
+                                                !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route } -> {
                                                     navController.backToMain()
                                                 }
 
@@ -696,10 +608,7 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painterResource(
                                                 if (active ||
-                                                    (
-                                                        navController.canNavigateUp &&
-                                                            !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
-                                                    )
+                                                    !navigationItems.fastAny { it.route == navBackStackEntry?.destination?.route }
                                                 ) {
                                                     R.drawable.arrow_back
                                                 } else {
@@ -739,13 +648,7 @@ class MainActivity : ComponentActivity() {
                                                 contentDescription = null,
                                             )
                                         }
-                                    } else if (navBackStackEntry?.destination?.route in
-                                        listOf(
-                                            Screens.Home.route,
-                                            Screens.Explore.route,
-                                            Screens.Library.route,
-                                        )
-                                    ) {
+                                    } else if (navBackStackEntry?.destination?.route in topLevelScreens) {
                                         Box(
                                             contentAlignment = Alignment.Center,
                                             modifier =
@@ -758,7 +661,7 @@ class MainActivity : ComponentActivity() {
                                         ) {
                                             BadgedBox(
                                                 badge = {
-                                                    if (latestVersion > BuildConfig.VERSION_CODE) {
+                                                    if (latestVersionName != "v${BuildConfig.VERSION_NAME}") {
                                                         Badge()
                                                     }
                                                 },
@@ -859,12 +762,19 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     onClick = {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
+                                        if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                                            navController.currentBackStackEntry?.savedStateHandle?.set("scrollToTop", true)
+                                            coroutineScope.launch {
+                                                searchBarScrollBehavior.state.resetHeightOffset()
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
                                         }
                                     },
                                 )
@@ -930,8 +840,9 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        const val ACTION_SEARCH = "com.zionhuang.music.action.SEARCH"
-        const val ACTION_LIBRARY = "com.zionhuang.music.action.LIBRARY"
+        const val ACTION_SEARCH = "com.malopieds.innertune.action.SEARCH"
+        const val ACTION_EXPLORE = "com.malopieds.innertune.action.EXPLORE"
+        const val ACTION_LIBRARY = "com.malopieds.innertune.action.LIBRARY"
     }
 }
 

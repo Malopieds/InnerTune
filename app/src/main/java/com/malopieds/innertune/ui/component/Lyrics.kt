@@ -50,9 +50,11 @@ import androidx.compose.ui.unit.sp
 import com.malopieds.innertune.BuildConfig
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
+import com.malopieds.innertune.constants.LyricsClickKey
 import com.malopieds.innertune.constants.LyricsTextPositionKey
 import com.malopieds.innertune.constants.PlayerBackgroundStyle
 import com.malopieds.innertune.constants.PlayerBackgroundStyleKey
+import com.malopieds.innertune.constants.PlayerTextAlignmentKey
 import com.malopieds.innertune.constants.TranslateLyricsKey
 import com.malopieds.innertune.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.malopieds.innertune.lyrics.LyricsEntry
@@ -63,6 +65,7 @@ import com.malopieds.innertune.ui.component.shimmer.ShimmerHost
 import com.malopieds.innertune.ui.component.shimmer.TextPlaceholder
 import com.malopieds.innertune.ui.menu.LyricsMenu
 import com.malopieds.innertune.ui.screens.settings.LyricsPosition
+import com.malopieds.innertune.ui.screens.settings.PlayerTextAlignment
 import com.malopieds.innertune.ui.utils.fadingEdge
 import com.malopieds.innertune.utils.rememberEnumPreference
 import com.malopieds.innertune.utils.rememberPreference
@@ -74,14 +77,17 @@ import kotlin.time.Duration.Companion.seconds
 fun Lyrics(
     sliderPositionProvider: () -> Long?,
     modifier: Modifier = Modifier,
-    changeColor: Boolean = false,
+    changeColor: Boolean,
+    color: Color,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return
     val menuState = LocalMenuState.current
     val density = LocalDensity.current
 
     val lyricsTextPosition by rememberEnumPreference(LyricsTextPositionKey, LyricsPosition.CENTER)
+    val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
     var translationEnabled by rememberPreference(TranslateLyricsKey, false)
+    val changeLyrics by rememberPreference(LyricsClickKey, true)
 
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
     val translating by playerConnection.translating.collectAsState()
@@ -111,7 +117,7 @@ fun Lyrics(
         }
 
     var currentLineIndex by remember {
-        mutableStateOf(-1)
+        mutableIntStateOf(-1)
     }
     // Because LaunchedEffect has delay, which leads to inconsistent with current line color and scroll animation,
     // we use deferredCurrentLineIndex when user is scrolling
@@ -170,7 +176,7 @@ fun Lyrics(
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.primary
             else ->
                 if (changeColor) {
-                    Color.Black
+                    color
                 } else {
                     MaterialTheme.colorScheme.primary
                 }
@@ -181,7 +187,7 @@ fun Lyrics(
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.secondary
             else ->
                 if (changeColor) {
-                    MaterialTheme.colorScheme.onSecondary
+                    MaterialTheme.colorScheme.onSurface
                 } else {
                     MaterialTheme.colorScheme.secondary
                 }
@@ -262,9 +268,7 @@ fun Lyrics(
                                 displayedCurrentLineIndex
                             ) {
                                 currentLine
-//                                MaterialTheme.colorScheme.primary
                             } else {
-//                                MaterialTheme.colorScheme.secondary
                                 outLines
                             },
                         textAlign =
@@ -277,7 +281,7 @@ fun Lyrics(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clickable(enabled = isSynced) {
+                                .clickable(enabled = isSynced && changeLyrics) {
                                     playerConnection.player.seekTo(item.time)
                                     lastPreviewTime = 0L
                                 }.padding(horizontal = 24.dp, vertical = 8.dp)

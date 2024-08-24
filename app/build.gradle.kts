@@ -13,19 +13,20 @@ plugins {
 
 android {
     namespace = "com.malopieds.innertune"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.malopieds.innertune"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 25
-        versionName = "0.5.8"
+        targetSdk = 35
+        versionCode = 26
+        versionName = "0.5.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            isCrunchPngs = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
@@ -119,7 +120,6 @@ dependencies {
     implementation(libs.squigglyslider)
 
     implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
@@ -131,6 +131,9 @@ dependencies {
     implementation(projects.innertube)
     implementation(projects.kugou)
     implementation(projects.lrclib)
+    implementation(projects.kizzy)
+
+    implementation(libs.ktor.client.core)
 
     coreLibraryDesugaring(libs.desugaring)
 
