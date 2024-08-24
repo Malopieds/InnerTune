@@ -299,12 +299,9 @@
     <string name="past_month">Esse mês</string>
     <string name="past_year">Esse ano</string>
     <string name="top_length">Tamanho do Meu Top</string>
-
-    <string name="remove_download_playlist_confirm">Você deseja realmente remover as músicas da playlist \"%s\" do armazenamento de Músicas Baixadas?</string>
-    <string name="delete_playlist_confirm">Você deseja realmente excluir a playlist \"%s\"?</string>
+    
     <string name="remove_from_playlist">Remover da playlist</string>
     <string name="skip_duplicates">Pular duplicados</string>
-    <string name="enable_lrclib">Ativar o fornecedor de letras LrcLib</string>
     <string name="duplicates">Duplicados</string>
     <string name="add_anyway">Adicionar mesmo assim</string>
     <string name="duplicates_description_single">Esta música já está na sua playlist</string>
