@@ -287,8 +287,6 @@
     <string name="new_version_available">有新版本</string>
     <string name="translation_models">翻译模型</string>
     <string name="clear_translation_models">清除翻译模型</string>
-    <string name="delete_playlist_confirm">是否确实要删除播放列表“%s”？</string>
-    <string name="remove_download_playlist_confirm">您真的想从下载的歌曲存储中删除所有“%s”播放列表中的歌曲吗？</string>
 
     <string name="all_time">全部时间</string>
     <string name="past_24_hours">过去 24 小时</string>
