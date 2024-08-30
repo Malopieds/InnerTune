@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Bottom navigation -->
     <string name="home">Główna</string>
@@ -14,7 +15,6 @@
         <item quantity="many">%d zaznaczonych</item>
         <item quantity="other">%d zaznaczonych</item>
     </plurals>
-
     <!-- Home -->
     <string name="history">Historia</string>
     <string name="stats">Statystyki</string>
@@ -33,12 +33,10 @@
     <string name="yesterday">Wczoraj</string>
     <string name="this_week">Ten tydzień</string>
     <string name="last_week">Ostatni tydzień</string>
-
     <!-- Stats -->
     <string name="most_played_songs">Najczęściej słuchane utwory</string>
     <string name="most_played_artists">Najczęściej słuchani artyści</string>
     <string name="most_played_albums">Najczęściej słuchane albumy</string>
-
     <!-- Search -->
     <string name="search">Szukaj</string>
     <string name="search_yt_music">Szukaj w YouTube Music...</string>
@@ -56,7 +54,6 @@
     <string name="filter_featured_playlists">Polecane playlisty</string>
     <string name="filter_bookmarked">Ulubione</string>
     <string name="no_results_found">Brak wyników</string>
-
     <!-- Artist screen -->
     <string name="from_your_library">Z Twojej biblioteki</string>
 
@@ -118,7 +115,6 @@
     <string name="sort_by_length">Długość</string>
     <string name="sort_by_play_time">Czas odtwarzania</string>
     <string name="sort_by_custom">Niestandardowa kolejność</string>
-
     <!-- Dialog -->
     <string name="media_id">Media id</string>
     <string name="mime_type">Typ MIME</string>
@@ -130,17 +126,14 @@
     <string name="file_size">Rozmiar</string>
     <string name="unknown">Nieznane</string>
     <string name="copied">Skopiowano do schowka</string>
-
     <string name="edit_lyrics">Edytuj tekst</string>
     <string name="search_lyrics">Szukaj tekstu</string>
-
     <string name="edit_song">Edytuj utwór</string>
     <string name="song_title">Tytuł utworu</string>
     <string name="song_artists">Artyści utworu</string>
     <string name="error_song_title_empty">Tytuł nie może być pusty.</string>
     <string name="error_song_artist_empty">Lista artystów nie może być pusta.</string>
     <string name="save">Zapisz</string>
-
     <string name="choose_playlist">Wybierz playlistę</string>
     <string name="edit_playlist">Edytuj playlistę</string>
     <string name="create_playlist">Utwórz playlistę</string>
@@ -207,7 +200,6 @@
     <string name="removed_song_from_playlist">Usunięto \"%s\" z playlisty</string>
     <string name="playlist_synced">Playlista zsynchronizowana</string>
     <string name="undo">Cofnij</string>
-
     <!-- Player -->
     <string name="lyrics_not_found">Nie znaleziono tekstu</string>
     <string name="sleep_timer">Minutnik</string>
@@ -222,7 +214,6 @@
     <string name="error_no_internet">Brak połączenia</string>
     <string name="error_timeout">Błąd limitu czasu</string>
     <string name="error_unknown">Nieznany błąd</string>
-
     <!-- Player action -->
     <string name="action_like">Polub</string>
     <string name="action_remove_like">Usuń polubienie</string>
@@ -295,7 +286,6 @@
     <string name="max_song_cache_size">Maks. rozmiar pamięci tymczasowej utworów</string>
     <string name="clear_song_cache">Wyczyść pamięć tymczasową utworów</string>
     <string name="size_used">%s w użyciu</string>
-
     <string name="privacy">Prywatność</string>
     <string name="pause_listen_history">Zatrzymaj historię odtwarzania</string>
     <string name="clear_listen_history">Wyczyść historię odtwarzania</string>

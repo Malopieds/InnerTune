@@ -63,6 +63,8 @@
     <string name="liked_songs">Любимые треки</string>
     <string name="downloaded_songs">Загруженная музыка</string>
     <string name="playlist_is_empty">Плейлист пуст</string>
+    <string name="remove_download_playlist_confirm">Вы уверены, что хотите удалить все песни из плейлиста «%s» из хранилища загруженной музыки?</string>
+    <string name="delete_playlist_confirm">Вы уверены, что хотите удалить плейлист «%s»?</string>
 
     <!-- Button -->
     <string name="retry">Повторить</string>
@@ -90,9 +92,11 @@
     <string name="share">Поделиться</string>
     <string name="delete">Удалить</string>
     <string name="remove_from_history">Удалить из истории</string>
+    <string name="remove_from_playlist">Удалить из плейлиста</string>
     <string name="search_online">Поиск в Интернете</string>
-    <string name="sync">Синхронизация</string>
+    <string name="sync">Синхронизировать</string>
     <string name="advanced">Контроль аудио</string>
+    <string name="tempo_and_pitch">Темп и высота тона</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Недавно добавленные</string>
@@ -135,6 +139,12 @@
     <string name="edit_artist">Редактировать исполнителя</string>
     <string name="artist_name">Имя исполнителя</string>
     <string name="error_artist_name_empty">Укажите имя исполнителя</string>
+
+    <string name="duplicates">Дубликаты</string>
+    <string name="skip_duplicates">Пропустить дубликаты</string>
+    <string name="add_anyway">Добавить в любом случае</string>
+    <string name="duplicates_description_single">Эта песня уже в вашем плейлисте</string>
+    <string name="duplicates_description_multiple">%d песен уже в вашем плейлисте</string>
 
     <!-- Noun -->
     <plurals name="n_song">
@@ -182,7 +192,7 @@
 
     <!-- Snackbar -->
     <string name="playlist_imported">Плейлист импортирован</string>
-    <string name="removed_song_from_playlist">«%s» удалено из списка воспроизведения</string>
+    <string name="removed_song_from_playlist">«%s» удалена из плейлиста</string>
     <string name="playlist_synced">Плейлист синхронизирован</string>
     <string name="undo">Отменить</string>
 
@@ -220,21 +230,30 @@
     <!-- Settings -->
     <string name="settings">Настройки</string>
     <string name="appearance">Внешний вид</string>
+    <string name="theme">Тема</string>
     <string name="enable_dynamic_theme">Включить динамическую тему</string>
     <string name="dark_theme">Темная тема</string>
     <string name="dark_theme_on">Вкл.</string>
     <string name="dark_theme_off">Выкл.</string>
     <string name="dark_theme_follow_system">Использовать настройки системы</string>
     <string name="pure_black">Режим чистого черного цвета</string>
-    <string name="default_open_tab">Вкладка навигации по умолчанию</string>
     <string name="customize_navigation_tabs">Настройка вкладок навигации</string>
+    <string name="player">Плеер</string>
+    <string name="player_text_alignment">Выравнивание текста плеера</string>
     <string name="lyrics_text_position">Расположение текста песни</string>
+    <string name="sided">Сбоку</string>
     <string name="left">Слева</string>
     <string name="center">По центру</string>
     <string name="right">Справа</string>
+    <string name="player_slider_style">Стиль ползунка плеера</string>
+    <string name="default_">По умолчанию</string>
+    <string name="squiggly">Волнистый</string>
+    <string name="misc">Разное</string>
+    <string name="default_open_tab">Вкладка навигации по умолчанию</string>
 
     <string name="content">Контент</string>
     <string name="login">Логин</string>
+    <string name="not_logged_in">Не авторизовано</string>
     <string name="content_language">Язык контента</string>
     <string name="content_country">Страна контента</string>
     <string name="system_default">По умолчанию системы</string>
@@ -273,7 +292,9 @@
     <string name="pause_search_history">Приостановить историю поиска</string>
     <string name="clear_search_history">Очистить историю поиска</string>
     <string name="clear_search_history_confirm">Вы уверены, что хотите очистить всю историю поиска?</string>
+    <string name="enable_lrclib">Включить провайдера текстов LrcLib</string>
     <string name="enable_kugou">Включить провайдера текстов KuGou</string>
+    <string name="hide_explicit">Скрывать контент с нецензурной лексикой</string>
 
     <string name="backup_restore">Резервное копирование</string>
     <string name="backup">Создать резервную копию</string>
@@ -282,6 +303,15 @@
     <string name="backup_create_success">Резервная копия создана успешно</string>
     <string name="backup_create_failed">Не удалось создать резервную копию</string>
     <string name="restore_failed">Не удалось восстановить резервную копию</string>
+
+    <string name="discord_integration">Интеграция с Discord</string>
+    <string name="discord_information">InnerTune использует библиотеку KizzyRPC для установки статуса вашего аккаунта Discord. Это включает использование соединения через Discord Gateway, что может считаться нарушением условий использования Discord. Однако, на данный момент нет известных случаев блокировки учетных записей пользователей по этой причине. Используйте на свой страх и риск.\n\nInnerTune будет извлекать только ваш токен, а все остальное хранится локально.</string>
+    <string name="dismiss">Закрыть</string>
+    <string name="options">Настройки</string>
+    <string name="preview">Предпросмотр</string>
+    <string name="login_failed">Ошибка входа</string>
+    <string name="logout">Выйти</string>
+    <string name="enable_discord_rpc">Включить Rich Presence</string>
 
     <string name="about">О приложении</string>
     <string name="app_version">Версия приложения</string>
