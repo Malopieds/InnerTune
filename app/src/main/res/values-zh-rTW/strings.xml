@@ -245,6 +245,7 @@
 
     <string name="content">內容</string>
     <string name="login">登入</string>
+    <string name="not_logged_in">尚未登入</string>
     <string name="content_language">預設內容語言</string>
     <string name="content_country">預設內容國家</string>
     <string name="system_default">系統預設</string>

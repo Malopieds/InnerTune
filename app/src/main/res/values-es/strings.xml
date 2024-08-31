@@ -39,7 +39,7 @@
     <string name="search_yt_music">Buscar en Youtube Music…</string>
     <string name="search_library">Buscar en la biblioteca…</string>
     <string name="filter_library">Biblioteca</string>
-    <string name="filter_liked">Me Gusta</string>
+    <string name="filter_liked">Gustar</string>
     <string name="filter_downloaded">Descargado</string>
     <string name="filter_all">Todo</string>
     <string name="filter_songs">Canciones</string>
@@ -88,7 +88,7 @@
     <string name="remove_from_history">Eliminar del historial</string>
     <string name="search_online">Buscar online</string>
     <string name="sync">Sincronizar</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Avanzado</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Fecha añadida</string>
@@ -192,10 +192,10 @@
     <!-- Player action -->
     <string name="action_like">Dar me gusta</string>
     <string name="action_remove_like">Quitar me gusta</string>
-    <string name="action_shuffle_on">Shuffle on</string>
-    <string name="action_shuffle_off">Shuffle off</string>
-    <string name="repeat_mode_off">Modo repetición apagado</string>
-    <string name="repeat_mode_one">Repetir canción actual</string>
+    <string name="action_shuffle_on">Aleatorio encendido</string>
+    <string name="action_shuffle_off">Aleatorio apagado</string>
+    <string name="repeat_mode_off">Modo de repetición desactivado</string>
+    <string name="repeat_mode_one">Repite la canción actual</string>
     <string name="repeat_mode_all">Repetir cola</string>
 
     <!-- Queue Title -->
@@ -209,11 +209,15 @@
     <string name="settings">Ajustes</string>
     <string name="appearance">Apariencia</string>
     <string name="enable_dynamic_theme">Habilitar tema dinámico</string>
+    <string name="player">Reproductor</string>
     <string name="dark_theme">Tema oscuro</string>
     <string name="dark_theme_on">Encendido</string>
     <string name="dark_theme_off">Apagado</string>
     <string name="dark_theme_follow_system">Seguir el sistema</string>
     <string name="pure_black">Negro puro</string>
+    <string name="player_text_alignment">Alineamiento del reproductor</string>
+    <string name="sided">De lado</string>
+    <string name="player_slider_style">Estilo del reproductor</string>
     <string name="default_open_tab">Pestaña de inicio por defecto</string>
     <string name="customize_navigation_tabs">Personalizar pestañas de navegación</string>
     <string name="lyrics_text_position">Posición del texto de las letras</string>
@@ -261,6 +265,8 @@
     <string name="pause_search_history">Pausar historial de búsquedas</string>
     <string name="clear_search_history">Borrar historial de búsquedas</string>
     <string name="clear_search_history_confirm">¿Estás seguro de que quieres borrar todo el historial de búsquedas?</string>
+    <string name="hide_explicit">Ocultar contenido explícito</string>
+    <string name="enable_lrclib">Habilitar el proveedor de letras LrcLib</string>
     <string name="enable_kugou">Habilitar el proveedor de letras KuGou</string>
 
     <string name="backup_restore">Copias de seguridad y restauración</string>
@@ -271,10 +277,19 @@
     <string name="backup_create_failed">No se ha podido crear la copia de seguridad</string>
     <string name="restore_failed">Error al restaurar la copia de seguridad</string>
 
+    <string name="discord_integration">Integración con Discord</string>
+    <string name="discord_information">InnerTune utiliza la biblioteca KizzyRPC para configurar el estado de tu cuenta de Discord. Esto implica el uso de la conexión Discord Gateway, lo que puede considerarse una violación de las Condiciones del servicio de Discord. Sin embargo, no se conocen casos de cuentas de usuario suspendidas por este motivo. Úsalo bajo tu propio riesgo.\n\nInnerTune solo extraerá tu token y todo lo demás se almacenará localmente.</string>
+    <string name="dismiss">Cerrar</string>
+    <string name="options">Opciones</string>
+    <string name="preview">Vista previa</string>
+    <string name="login_failed">El inicio de sesion fallo</string>
+    <string name="logout">Cerrar sesion</string>
+    <string name="enable_discord_rpc">Habilitar el RPC</string>
+
     <string name="about">Acerca de</string>
     <string name="app_version">Versión de la app</string>
 
-    <string name="new_version_available">Nueva Versión Disponible</string>
-    <string name="translation_models">Translation Models</string>
-    <string name="clear_translation_models">Clear translation models</string>
+    <string name="new_version_available">Nueva versión disponible</string>
+    <string name="translation_models">Modelos de traducción</string>
+    <string name="clear_translation_models">Limpiar los modelos de traduccion</string>
 </resources>

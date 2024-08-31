@@ -1,0 +1,17 @@
+Um 'fork' (modificação) do InnerTune, um cliente do YouTube Music em Material 3 para Android
+
+<br><b>Funcionalidade:</b>
+
+- Tocar músicas do YT/YT Music sem anúncios
+- Reprodução em segundo plano
+- Pesquisar músicas, vídeos, álbuns, e playlists do YouTube Music
+- Gerenciamento de biblioteca
+- Cache e download de músicas para reprodução offline
+- Letras sincronizadas
+- Pular silêncio
+- Normalização do áudio
+- Tema dinâmico
+- Tradução! (Oi! ^^)
+- Suporte ao Android Auto
+- Escolhas rápidas personalizadas
+- Material 3 (You)

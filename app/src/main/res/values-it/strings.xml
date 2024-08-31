@@ -53,7 +53,7 @@
     <string name="filter_playlists">Playlist</string>
     <string name="filter_community_playlists">Playlist della community</string>
     <string name="filter_featured_playlists">Playlist in rilievo</string>
-    <string name="filter_bookmarked">Bookmarked</string> <!-- TODO -->
+    <string name="filter_bookmarked">Aggiunto ai segnalibri</string>
     <string name="no_results_found">Nessun risultato trovato</string>
 
     <!-- Artist screen -->
@@ -102,10 +102,8 @@
     <string name="remove_from_history">Rimuovi da cronologia</string>
     <string name="search_online">Cerca online</string>
     <string name="sync">Sincronizza</string>
-    <string name="advanced">Advanzato</string>
-    <string name="select">Seleziona tutto</string>
-    <string name="like_all">Mi piace tutto</string>
-    
+    <string name="advanced">Avanzate</string>
+
     <!-- Sort menu -->
     <string name="sort_by_create_date">Data di aggiunta</string>
     <string name="sort_by_last_updated">Data di aggiornamento</string>
@@ -237,7 +235,9 @@
     <string name="pure_black">Nero</string>
     <string name="default_open_tab">Scheda principale predefinita</string>
     <string name="customize_navigation_tabs">Personalizza le schede di navigazione</string>
+    <string name="player_text_alignment">Allineamento del testo del riproduttore</string>
     <string name="lyrics_text_position">Posizione del testo dei brani</string>
+    <string name="sided">Laterale</string>
     <string name="left">Sinistra</string>
     <string name="center">Centro</string>
     <string name="right">Destra</string>
