@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +40,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.malopieds.innertune.LocalDatabase
 import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
 import com.malopieds.innertune.constants.CONTENT_TYPE_PLAYLIST
+import com.malopieds.innertune.constants.GridItemSize
+import com.malopieds.innertune.constants.GridItemsSizeKey
 import com.malopieds.innertune.constants.GridThumbnailHeight
 import com.malopieds.innertune.constants.LibraryViewType
 import com.malopieds.innertune.constants.PlaylistSortDescendingKey
@@ -80,6 +84,7 @@ fun LibraryPlaylistsScreen(
     var viewType by rememberEnumPreference(PlaylistViewTypeKey, LibraryViewType.GRID)
     val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSortTypeKey, PlaylistSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSortDescendingKey, true)
+    val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val playlists by viewModel.allPlaylists.collectAsState()
 
@@ -107,6 +112,19 @@ fun LibraryPlaylistsScreen(
 
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
+
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
 
     var showAddPlaylistDialog by rememberSaveable {
         mutableStateOf(false)
@@ -212,7 +230,7 @@ fun LibraryPlaylistsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("auto_playlist/liked")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -228,7 +246,7 @@ fun LibraryPlaylistsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("auto_playlist/downloaded")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -244,7 +262,7 @@ fun LibraryPlaylistsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("top_playlist/$topSize")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -290,7 +308,7 @@ fun LibraryPlaylistsScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }
@@ -307,7 +325,10 @@ fun LibraryPlaylistsScreen(
             LibraryViewType.GRID -> {
                 LazyVerticalGrid(
                     state = lazyGridState,
-                    columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
+                    columns =
+                        GridCells.Adaptive(
+                            minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
+                        ),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -341,7 +362,7 @@ fun LibraryPlaylistsScreen(
                                         onClick = {
                                             navController.navigate("auto_playlist/liked")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -360,7 +381,7 @@ fun LibraryPlaylistsScreen(
                                         onClick = {
                                             navController.navigate("auto_playlist/downloaded")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -379,7 +400,7 @@ fun LibraryPlaylistsScreen(
                                         onClick = {
                                             navController.navigate("top_playlist/$topSize")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -408,7 +429,7 @@ fun LibraryPlaylistsScreen(
                                                 )
                                             }
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
                 }

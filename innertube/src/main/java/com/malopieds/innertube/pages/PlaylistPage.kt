@@ -27,23 +27,25 @@ data class PlaylistPage(
                         ?.firstOrNull()
                         ?.text ?: return null,
                 artists =
-                    renderer.flexColumns.getOrNull(1)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.oddElements()?.map {
-                        Artist(
-                            name = it.text,
-                            id = it.navigationEndpoint?.browseEndpoint?.browseId,
-                        )
-                    } ?: return null,
+                    renderer.flexColumns
+                        .getOrNull(1)
+                        ?.musicResponsiveListItemFlexColumnRenderer
+                        ?.text
+                        ?.runs
+                        ?.oddElements()
+                        ?.map {
+                            Artist(
+                                name = it.text,
+                                id = it.navigationEndpoint?.browseEndpoint?.browseId,
+                            )
+                        }.orEmpty()
+                        .ifEmpty { return null },
                 album =
                     renderer.flexColumns.getOrNull(2)?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()?.let {
-                        val browseId = it.navigationEndpoint?.browseEndpoint?.browseId
-                        if (browseId != null) {
-                            Album(
-                                name = it.text,
-                                id = browseId,
-                            )
-                        } else {
-                            null
-                        }
+                        Album(
+                            name = it.text,
+                            id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return@let null,
+                        )
                     },
                 duration =
                     renderer.fixedColumns

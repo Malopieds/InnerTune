@@ -17,9 +17,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,12 +35,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.AlbumViewTypeKey
 import com.malopieds.innertune.constants.CONTENT_TYPE_HEADER
 import com.malopieds.innertune.constants.CONTENT_TYPE_PLAYLIST
+import com.malopieds.innertune.constants.GridItemSize
+import com.malopieds.innertune.constants.GridItemsSizeKey
 import com.malopieds.innertune.constants.GridThumbnailHeight
 import com.malopieds.innertune.constants.LibraryViewType
 import com.malopieds.innertune.constants.MixSortDescendingKey
@@ -84,6 +89,7 @@ fun LibraryMixScreen(
     var viewType by rememberEnumPreference(AlbumViewTypeKey, LibraryViewType.GRID)
     val (sortType, onSortTypeChange) = rememberEnumPreference(MixSortTypeKey, MixSortType.CREATE_DATE)
     val (sortDescending, onSortDescendingChange) = rememberPreference(MixSortDescendingKey, true)
+    val gridItemSize by rememberEnumPreference(GridItemsSizeKey, GridItemSize.BIG)
 
     val topSize by viewModel.topValue.collectAsState(initial = 50)
     val likedPlaylist =
@@ -149,7 +155,20 @@ fun LibraryMixScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val scrollToTop = backStackEntry?.savedStateHandle?.getStateFlow("scrollToTop", false)?.collectAsState()
+
+    LaunchedEffect(scrollToTop?.value) {
+        if (scrollToTop?.value == true) {
+            when (viewType) {
+                LibraryViewType.LIST -> lazyListState.animateScrollToItem(0)
+                LibraryViewType.GRID -> lazyGridState.animateScrollToItem(0)
+            }
+            backStackEntry?.savedStateHandle?.set("scrollToTop", false)
+        }
+    }
     val headerContent = @Composable {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -197,6 +216,7 @@ fun LibraryMixScreen(
         when (viewType) {
             LibraryViewType.LIST ->
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -225,7 +245,7 @@ fun LibraryMixScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("auto_playlist/liked")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -241,7 +261,7 @@ fun LibraryMixScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("auto_playlist/downloaded")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -257,7 +277,7 @@ fun LibraryMixScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         navController.navigate("top_playlist/$topSize")
-                                    }.animateItemPlacement(),
+                                    }.animateItem(),
                         )
                     }
 
@@ -305,7 +325,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 
@@ -347,7 +367,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 
@@ -391,7 +411,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 
@@ -402,7 +422,10 @@ fun LibraryMixScreen(
             LibraryViewType.GRID ->
                 LazyVerticalGrid(
                     state = lazyGridState,
-                    columns = GridCells.Adaptive(minSize = GridThumbnailHeight + 24.dp),
+                    columns =
+                        GridCells.Adaptive(
+                            minSize = GridThumbnailHeight + if (gridItemSize == GridItemSize.BIG) 24.dp else (-24).dp,
+                        ),
                     contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 ) {
                     item(
@@ -436,7 +459,7 @@ fun LibraryMixScreen(
                                         onClick = {
                                             navController.navigate("auto_playlist/liked")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -455,7 +478,7 @@ fun LibraryMixScreen(
                                         onClick = {
                                             navController.navigate("auto_playlist/downloaded")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -474,7 +497,7 @@ fun LibraryMixScreen(
                                         onClick = {
                                             navController.navigate("top_playlist/$topSize")
                                         },
-                                    ).animateItemPlacement(),
+                                    ).animateItem(),
                         )
                     }
 
@@ -505,7 +528,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 
@@ -530,7 +553,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 
@@ -558,7 +581,7 @@ fun LibraryMixScreen(
                                                         )
                                                     }
                                                 },
-                                            ).animateItemPlacement(),
+                                            ).animateItem(),
                                 )
                             }
 

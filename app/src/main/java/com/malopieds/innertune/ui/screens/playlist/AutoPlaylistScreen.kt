@@ -64,9 +64,9 @@ import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.LocalPlayerConnection
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.AlbumThumbnailSize
-import com.malopieds.innertune.constants.PlaylistSongSortDescendingKey
-import com.malopieds.innertune.constants.PlaylistSongSortType
-import com.malopieds.innertune.constants.PlaylistSongSortTypeKey
+import com.malopieds.innertune.constants.AutoPlaylistSongSortDescendingKey
+import com.malopieds.innertune.constants.AutoPlaylistSongSortType
+import com.malopieds.innertune.constants.AutoPlaylistSongSortTypeKey
 import com.malopieds.innertune.constants.ThumbnailCornerRadius
 import com.malopieds.innertune.db.entities.Song
 import com.malopieds.innertune.extensions.toMediaItem
@@ -120,8 +120,8 @@ fun AutoPlaylistScreen(
         mutableStateOf(false)
     }
 
-    val (sortType, onSortTypeChange) = rememberEnumPreference(PlaylistSongSortTypeKey, PlaylistSongSortType.CUSTOM)
-    val (sortDescending, onSortDescendingChange) = rememberPreference(PlaylistSongSortDescendingKey, true)
+    val (sortType, onSortTypeChange) = rememberEnumPreference(AutoPlaylistSongSortTypeKey, AutoPlaylistSongSortType.CREATE_DATE)
+    val (sortDescending, onSortDescendingChange) = rememberPreference(AutoPlaylistSongSortDescendingKey, true)
 
     val downloadUtil = LocalDownloadUtil.current
     var downloadState by remember {
@@ -389,7 +389,7 @@ fun AutoPlaylistScreen(
                         ) {
                             if (selection) {
                                 val count = wrappedSongs?.count { it.isSelected } ?: 0
-                                Text(text = pluralStringResource(R.plurals.n_elements, count, count), modifier = Modifier.weight(1f))
+                                Text(text = pluralStringResource(R.plurals.n_song, count, count), modifier = Modifier.weight(1f))
                                 IconButton(
                                     onClick = {
                                         if (count == wrappedSongs?.size) {
@@ -447,11 +447,10 @@ fun AutoPlaylistScreen(
                                     onSortDescendingChange = onSortDescendingChange,
                                     sortTypeText = { sortType ->
                                         when (sortType) {
-                                            PlaylistSongSortType.CUSTOM -> R.string.sort_by_custom
-                                            PlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
-                                            PlaylistSongSortType.NAME -> R.string.sort_by_name
-                                            PlaylistSongSortType.ARTIST -> R.string.sort_by_artist
-                                            PlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
+                                            AutoPlaylistSongSortType.CREATE_DATE -> R.string.sort_by_create_date
+                                            AutoPlaylistSongSortType.NAME -> R.string.sort_by_name
+                                            AutoPlaylistSongSortType.ARTIST -> R.string.sort_by_artist
+                                            AutoPlaylistSongSortType.PLAY_TIME -> R.string.sort_by_play_time
                                         }
                                     },
                                     modifier = Modifier.weight(1f),

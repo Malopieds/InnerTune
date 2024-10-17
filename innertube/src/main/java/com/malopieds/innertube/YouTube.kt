@@ -19,6 +19,7 @@ import com.malopieds.innertube.models.YouTubeClient.Companion.WEB
 import com.malopieds.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.malopieds.innertube.models.YouTubeLocale
 import com.malopieds.innertube.models.getContinuation
+import com.malopieds.innertube.models.oddElements
 import com.malopieds.innertube.models.response.AccountMenuResponse
 import com.malopieds.innertube.models.response.BrowseResponse
 import com.malopieds.innertube.models.response.GetQueueResponse
@@ -271,10 +272,14 @@ object YouTube {
                                 ?.musicResponsiveHeaderRenderer
                                 ?.straplineTextOne
                                 ?.runs
+                                ?.oddElements()
                                 ?.map {
                                     Artist(
                                         name = it.text,
-                                        id = it.navigationEndpoint?.browseEndpoint?.browseId,
+                                        id =
+                                            it.navigationEndpoint
+                                                ?.browseEndpoint
+                                                ?.browseId,
                                     )
                                 }!!,
                         year =
@@ -306,19 +311,19 @@ object YouTube {
                                 ?.thumbnails
                                 ?.lastOrNull()
                                 ?.url!!,
-                        otherVersions =
-                            response.contents.twoColumnBrowseResultsRenderer.secondaryContents
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.getOrNull(
-                                    1,
-                                )?.musicCarouselShelfRenderer
-                                ?.contents
-                                ?.mapNotNull { it.musicTwoRowItemRenderer }
-                                ?.mapNotNull(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
-                                .orEmpty(),
                     ),
                 songs = if (withSongs) albumSongs(playlistId).getOrThrow() else emptyList(),
+                otherVersions =
+                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents
+                        ?.sectionListRenderer
+                        ?.contents
+                        ?.getOrNull(
+                            1,
+                        )?.musicCarouselShelfRenderer
+                        ?.contents
+                        ?.mapNotNull { it.musicTwoRowItemRenderer }
+                        ?.mapNotNull(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
+                        .orEmpty(),
             )
         }
 
@@ -917,6 +922,16 @@ object YouTube {
                         endpoint.params,
                         continuation,
                     ).body<NextResponse>()
+            val title =
+                response.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0]
+                    .tabRenderer.content
+                    ?.musicQueueRenderer
+                    ?.header
+                    ?.musicQueueHeaderRenderer
+                    ?.subtitle
+                    ?.runs
+                    ?.firstOrNull()
+                    ?.text
             val playlistPanelRenderer =
                 response.continuationContents?.playlistPanelContinuation
                     ?: response.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs[0]
@@ -935,7 +950,7 @@ object YouTube {
                 ?.let { watchPlaylistEndpoint ->
                     return@runCatching next(watchPlaylistEndpoint).getOrThrow().let { result ->
                         result.copy(
-                            title = playlistPanelRenderer.title,
+                            title = title,
                             items =
                                 playlistPanelRenderer.contents.mapNotNull {
                                     it.playlistPanelVideoRenderer?.let { renderer ->

@@ -1,6 +1,9 @@
 package com.malopieds.innertune.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,18 +30,19 @@ import com.malopieds.innertune.ui.utils.backToMain
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    latestVersion: Long,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
+    latestVersionName: String,
 ) {
     val uriHandler = LocalUriHandler.current
 
     Column(
-        modifier =
-            Modifier
-                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-                .verticalScroll(rememberScrollState()),
+        Modifier
+            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+            .verticalScroll(rememberScrollState()),
     ) {
+        Spacer(Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top)))
+
         PreferenceEntry(
             title = { Text(stringResource(R.string.appearance)) },
             icon = { Icon(painterResource(R.drawable.palette), null) },
@@ -65,6 +69,11 @@ fun SettingsScreen(
             onClick = { navController.navigate("settings/privacy") },
         )
         PreferenceEntry(
+            title = { Text(stringResource(R.string.discord_integration)) },
+            icon = { Icon(painterResource(R.drawable.discord), null) },
+            onClick = { navController.navigate("settings/discord") },
+        )
+        PreferenceEntry(
             title = { Text(stringResource(R.string.backup_restore)) },
             icon = { Icon(painterResource(R.drawable.restore), null) },
             onClick = { navController.navigate("settings/backup_restore") },
@@ -74,13 +83,14 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.info), null) },
             onClick = { navController.navigate("settings/about") },
         )
-        if (latestVersion > BuildConfig.VERSION_CODE) {
+        if (latestVersionName != "v${BuildConfig.VERSION_NAME}") {
             PreferenceEntry(
                 title = {
                     Text(
                         text = stringResource(R.string.new_version_available),
                     )
                 },
+                description = latestVersionName,
                 icon = {
                     BadgedBox(
                         badge = { Badge() },
@@ -89,7 +99,7 @@ fun SettingsScreen(
                     }
                 },
                 onClick = {
-                    uriHandler.openUri("https://github.com/Malopieds/InnerTText(une/releases/latest")
+                    uriHandler.openUri("https://github.com/Malopieds/InnerTune/releases/latest")
                 },
             )
         }

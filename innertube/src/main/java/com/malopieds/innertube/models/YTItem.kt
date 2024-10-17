@@ -41,7 +41,6 @@ data class AlbumItem(
     val year: Int? = null,
     override val thumbnail: String,
     override val explicit: Boolean = false,
-    val otherVersions: List<AlbumItem> = emptyList(),
 ) : YTItem() {
     override val shareLink: String
         get() = "https://music.youtube.com/playlist?list=$playlistId"
@@ -75,3 +74,10 @@ data class ArtistItem(
     override val shareLink: String
         get() = "https://music.youtube.com/channel/$id"
 }
+
+fun <T : YTItem> List<T>.filterExplicit(enabled: Boolean = true) =
+    if (enabled) {
+        filter { !it.explicit }
+    } else {
+        this
+    }

@@ -24,7 +24,6 @@ A fork of InnerTune, A Material 3 YouTube Music client for Android
 - Library management
 - Cache and download songs for offline playback
 - Synchronized lyrics
-- Lyrics translator (experimental)
 - Skip silence
 - Audio normalization
 - Adjust tempo/pitch
@@ -33,6 +32,7 @@ A fork of InnerTune, A Material 3 YouTube Music client for Android
 - Android Auto support
 - Personalized quick picks
 - Material 3
+- Discord Rich Presence support
 
 ## Screenshots
 
@@ -85,3 +85,11 @@ including bug fixes and new features.
 I want to give credit to [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic) for being an
 example of Jetpack Compose music player. It helped me a lot on my way to learn Compose and
 Android development. And obviously the forked repo [z-huang/InnerTune](https://github.com/z-huang/InnerTune).
+
+## Disclaimer
+
+This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any
+way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
+
+Any trademark, service mark, trade name, or other intellectual property rights used in this project
+are owned by the respective owners.
