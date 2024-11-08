@@ -88,6 +88,8 @@ val QuickPicksKey = stringPreferencesKey("discover")
 val PreferredLyricsProviderKey = stringPreferencesKey("lyricsProvider")
 val QueueEditLockKey = booleanPreferencesKey("queueEditLock")
 
+val CheckForPrereleasesKey = booleanPreferencesKey("checkForPrereleases")
+
 enum class LibraryViewType {
     LIST,
     GRID,

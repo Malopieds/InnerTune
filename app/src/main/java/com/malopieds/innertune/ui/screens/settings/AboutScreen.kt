@@ -41,6 +41,9 @@ import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.R
 import com.malopieds.innertune.ui.component.IconButton
 import com.malopieds.innertune.ui.utils.backToMain
+import com.malopieds.innertune.constants.CheckForPrereleasesKey
+import com.malopieds.innertune.ui.component.SwitchPreference
+import com.malopieds.innertune.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +51,9 @@ fun AboutScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+
+    val (checkForPrereleases, onCheckForPrereleasesChange) = rememberPreference(key = CheckForPrereleasesKey, defaultValue = false)
+
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -150,6 +156,14 @@ fun AboutScreen(
                 )
             }
         }
+
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.check_for_prereleases)) },
+            icon = { Icon(painterResource(R.drawable.update), null) },
+            checked = checkForPrereleases,
+            onCheckedChange = onCheckForPrereleasesChange,
+        )
     }
 
     TopAppBar(
