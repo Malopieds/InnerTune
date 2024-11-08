@@ -210,7 +210,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LaunchedEffect(Unit) {
-                if (System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
+                val checkForUpdates = dataStore.get(CheckForUpdatesKey, false)
+                if (checkForUpdates && System.currentTimeMillis() - Updater.lastCheckTime > 1.days.inWholeMilliseconds) {
                     val checkForPrereleases = dataStore.get(CheckForPrereleasesKey, false)
                     Updater.getLatestVersionName(checkForPrereleases).onSuccess {
                         latestVersionName = it
@@ -690,7 +691,7 @@ class MainActivity : ComponentActivity() {
                                         ) {
                                             BadgedBox(
                                                 badge = {
-                                                    if (latestVersionName != "v${BuildConfig.VERSION_NAME}") {
+                                                    if (latestVersionName != "v${BuildConfig.VERSION_NAME}" && latestVersionName != "${BuildConfig.VERSION_NAME}") {
                                                         Badge()
                                                     }
                                                 },

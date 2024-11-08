@@ -41,6 +41,7 @@ import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.R
 import com.malopieds.innertune.ui.component.IconButton
 import com.malopieds.innertune.ui.utils.backToMain
+import com.malopieds.innertune.constants.CheckForUpdatesKey
 import com.malopieds.innertune.constants.CheckForPrereleasesKey
 import com.malopieds.innertune.ui.component.SwitchPreference
 import com.malopieds.innertune.utils.rememberPreference
@@ -52,6 +53,7 @@ fun AboutScreen(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
 
+    val (checkForUpdates, onCheckForUpdatesChange) = rememberPreference(key = CheckForUpdatesKey, defaultValue = true)
     val (checkForPrereleases, onCheckForPrereleasesChange) = rememberPreference(key = CheckForPrereleasesKey, defaultValue = false)
 
     val uriHandler = LocalUriHandler.current
@@ -157,6 +159,12 @@ fun AboutScreen(
             }
         }
 
+        SwitchPreference(
+            title = { Text(stringResource(R.string.check_for_updates)) },
+            icon = { Icon(painterResource(R.drawable.update), null) },
+            checked = checkForUpdates,
+            onCheckedChange = onCheckForUpdatesChange,
+        )
 
         SwitchPreference(
             title = { Text(stringResource(R.string.check_for_prereleases)) },

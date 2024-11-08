@@ -83,7 +83,7 @@ fun SettingsScreen(
             icon = { Icon(painterResource(R.drawable.info), null) },
             onClick = { navController.navigate("settings/about") },
         )
-        if (latestVersionName != "v${BuildConfig.VERSION_NAME}") {
+        if (latestVersionName != "v${BuildConfig.VERSION_NAME}" && latestVersionName != "${BuildConfig.VERSION_NAME}") {
             PreferenceEntry(
                 title = {
                     Text(
