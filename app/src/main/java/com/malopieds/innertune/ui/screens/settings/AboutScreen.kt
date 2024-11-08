@@ -45,6 +45,7 @@ import com.malopieds.innertune.constants.CheckForUpdatesKey
 import com.malopieds.innertune.constants.CheckForPrereleasesKey
 import com.malopieds.innertune.ui.component.SwitchPreference
 import com.malopieds.innertune.utils.rememberPreference
+import androidx.compose.animation.AnimatedVisibility
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,12 +167,14 @@ fun AboutScreen(
             onCheckedChange = onCheckForUpdatesChange,
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.check_for_prereleases)) },
-            icon = { Icon(painterResource(R.drawable.update), null) },
-            checked = checkForPrereleases,
-            onCheckedChange = onCheckForPrereleasesChange,
-        )
+        AnimatedVisibility(checkForUpdates) {
+            SwitchPreference(
+                title = { Text(stringResource(R.string.check_for_prereleases)) },
+                icon = { Icon(painterResource(R.drawable.fast_forward), null) },
+                checked = checkForPrereleases,
+                onCheckedChange = onCheckForPrereleasesChange,
+            )
+        }
     }
 
     TopAppBar(
