@@ -77,7 +77,7 @@ fun AboutScreen(
             verticalAlignment = Alignment.Top,
         ) {
             Text(
-                text = "InnerTune",
+                text = "FlowTune",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
@@ -113,7 +113,7 @@ fun AboutScreen(
                 Spacer(Modifier.width(4.dp))
 
                 Text(
-                    text = "DEBUG",
+                    text = "FOSS",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary,
                     modifier =
@@ -133,7 +133,7 @@ fun AboutScreen(
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "by Zion Huang, forked by Malopieds",
+            text = "by abhiram79",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.secondary,
         )
@@ -142,7 +142,7 @@ fun AboutScreen(
 
         Row {
             IconButton(
-                onClick = { uriHandler.openUri("https://github.com/Malopieds/InnerTune") },
+                onClick = { uriHandler.openUri("https://github.com/abhiram79/Flowtune") },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.github),
