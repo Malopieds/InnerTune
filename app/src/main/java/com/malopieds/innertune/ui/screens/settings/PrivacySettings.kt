@@ -191,18 +191,9 @@ fun PrivacySettings(
             onValueSelected = onPreferredProviderChange,
         )
 
-        PreferenceGroupTitle(
-            title = stringResource(R.string.misc),
-        )
+        
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.disable_screenshot)) },
-            description = stringResource(R.string.disable_screenshot_desc),
-            icon = { Icon(painterResource(R.drawable.screenshot), null) },
-            checked = disableScreenshot,
-            onCheckedChange = onDisableScreenshotChange,
-        )
-    }
+        
 
     TopAppBar(
         title = { Text(stringResource(R.string.privacy)) },
