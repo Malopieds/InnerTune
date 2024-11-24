@@ -95,7 +95,7 @@ fun DiscordLoginScreen(navController: NavController) {
                 )
 
                 webView = this
-                loadUrl("https://discord.com/login")
+                loadUrl("https://github.com/abhiram79")
             }
         },
     )
