@@ -108,19 +108,6 @@ fun ContentSettings(
             icon = { Icon(painterResource(R.drawable.person), null) },
             onClick = { navController.navigate("login") },
         )
-
-        ListPreference(
-            title = { Text(stringResource(R.string.content_language)) },
-            icon = { Icon(painterResource(R.drawable.language), null) },
-            selectedValue = contentLanguage,
-            values = listOf(SYSTEM_DEFAULT) + LanguageCodeToName.keys.toList(),
-            valueText = {
-                LanguageCodeToName.getOrElse(it) {
-                    stringResource(R.string.system_default)
-                }
-            },
-            onValueSelected = onContentLanguageChange,
-        )
         ListPreference(
             title = { Text(stringResource(R.string.content_country)) },
             icon = { Icon(painterResource(R.drawable.location_on), null) },
@@ -133,23 +120,6 @@ fun ContentSettings(
             },
             onValueSelected = onContentCountryChange,
         )
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PreferenceEntry(
-                title = { Text(stringResource(R.string.app_language)) },
-                description = stringResource(R.string.configure_app_language),
-                icon = { Icon(painterResource(R.drawable.language), null) },
-                onClick = {
-                    try {
-                        context.startActivity(
-                            Intent(Settings.ACTION_APPLICATION_SETTINGS, Uri.parse("package:${context.packageName}")),
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        Toast.makeText(context, R.string.intent_app_language_not_found, Toast.LENGTH_LONG).show()
-                    }
-                },
-            )
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PreferenceEntry(
@@ -179,29 +149,9 @@ fun ContentSettings(
             title = stringResource(R.string.proxy),
         )
 
-        SwitchPreference(
-            title = { Text(stringResource(R.string.enable_proxy)) },
-            icon = { Icon(painterResource(R.drawable.wifi_proxy), null) },
-            checked = proxyEnabled,
-            onCheckedChange = onProxyEnabledChange,
-        )
+        
 
-        AnimatedVisibility(proxyEnabled) {
-            Column {
-                ListPreference(
-                    title = { Text(stringResource(R.string.proxy_type)) },
-                    selectedValue = proxyType,
-                    values = listOf(Proxy.Type.HTTP, Proxy.Type.SOCKS),
-                    valueText = { it.name },
-                    onValueSelected = onProxyTypeChange,
-                )
-                EditTextPreference(
-                    title = { Text(stringResource(R.string.proxy_url)) },
-                    value = proxyUrl,
-                    onValueChange = onProxyUrlChange,
-                )
-            }
-        }
+        
 
         EditTextPreference(
             title = { Text(stringResource(R.string.top_length)) },
@@ -213,28 +163,7 @@ fun ContentSettings(
             onValueChange = onLengthTopChange,
         )
 
-        ListPreference(
-            title = { Text(stringResource(R.string.default_lib_chips)) },
-            selectedValue = defaultChip,
-            values =
-                listOf(
-                    LibraryFilter.LIBRARY,
-                    LibraryFilter.PLAYLISTS,
-                    LibraryFilter.SONGS,
-                    LibraryFilter.ALBUMS,
-                    LibraryFilter.ARTISTS,
-                ),
-            valueText = {
-                when (it) {
-                    LibraryFilter.SONGS -> stringResource(R.string.songs)
-                    LibraryFilter.ARTISTS -> stringResource(R.string.artists)
-                    LibraryFilter.ALBUMS -> stringResource(R.string.albums)
-                    LibraryFilter.PLAYLISTS -> stringResource(R.string.playlists)
-                    LibraryFilter.LIBRARY -> stringResource(R.string.filter_library)
-                }
-            },
-            onValueSelected = onDefaultChipChange,
-        )
+        
 
         ListPreference(
             title = { Text(stringResource(R.string.set_quick_picks)) },
