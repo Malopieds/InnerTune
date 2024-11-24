@@ -268,48 +268,11 @@ fun AppearanceSettings(
             },
         )
 
-        PreferenceEntry(
-            title = { Text(stringResource(R.string.player_slider_style)) },
-            description =
-                when (sliderStyle) {
-                    SliderStyle.DEFAULT -> stringResource(R.string.default_)
-                    SliderStyle.SQUIGGLY -> stringResource(R.string.squiggly)
-                },
-            icon = { Icon(painterResource(R.drawable.sliders), null) },
-            onClick = {
-                showSliderOptionDialog = true
-            },
-        )
-
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_swipe_thumbnail)) },
             icon = { Icon(painterResource(R.drawable.swipe), null) },
             checked = swipeThumbnail,
             onCheckedChange = onSwipeThumbnailChange,
-        )
-
-        EnumListPreference(
-            title = { Text(stringResource(R.string.player_text_alignment)) },
-            icon = {
-                Icon(
-                    painter =
-                        painterResource(
-                            when (playerTextAlignment) {
-                                PlayerTextAlignment.CENTER -> R.drawable.format_align_center
-                                PlayerTextAlignment.SIDED -> R.drawable.format_align_left
-                            },
-                        ),
-                    contentDescription = null,
-                )
-            },
-            selectedValue = playerTextAlignment,
-            onValueSelected = onPlayerTextAlignmentChange,
-            valueText = {
-                when (it) {
-                    PlayerTextAlignment.SIDED -> stringResource(R.string.sided)
-                    PlayerTextAlignment.CENTER -> stringResource(R.string.center)
-                }
-            },
         )
 
         EnumListPreference(
@@ -345,26 +308,12 @@ fun AppearanceSettings(
             valueText = {
                 when (it) {
                     NavigationTab.HOME -> stringResource(R.string.home)
-                    NavigationTab.EXPLORE -> stringResource(R.string.explore)
                     NavigationTab.LIBRARY -> stringResource(R.string.filter_library)
                 }
             },
         )
 
-        EnumListPreference(
-            title = { Text(stringResource(R.string.grid_cell_size)) },
-            icon = { Icon(painterResource(R.drawable.grid_view), null) },
-            selectedValue = gridItemSize,
-            onValueSelected = onGridItemSizeChange,
-            valueText = {
-                when (it) {
-                    GridItemSize.SMALL -> stringResource(R.string.small)
-                    GridItemSize.BIG -> stringResource(R.string.big)
-                }
-            },
-        )
-    }
-
+       
     TopAppBar(
         title = { Text(stringResource(R.string.appearance)) },
         navigationIcon = {
