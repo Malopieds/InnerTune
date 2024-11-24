@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController) {
                             url: String,
                             isReload: Boolean,
                         ) {
-                            if (url.startsWith("https://music.youtube.com")) {
+                            if (url.startsWith("https://music.youtube.com/")) {
                                 innerTubeCookie = CookieManager.getInstance().getCookie(url)
                                 GlobalScope.launch {
                                     YouTube
