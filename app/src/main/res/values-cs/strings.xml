@@ -269,7 +269,7 @@
     <string name="pure_black">Čistě černá</string>
     <string name="customize_navigation_tabs">Přizpůsobit karty navigace</string>
     <string name="player">Přehrávač</string>
-    <string name="lyrics_text_position">Zarovnání textu přehrávače</string>
+    <string name="player_text_alignment">Zarovnání textu přehrávače</string>
     <string name="lyrics_text_position">Pozice textů</string>
     <string name="sided">Na straně</string>
     <string name="left">Vlevo</string>
