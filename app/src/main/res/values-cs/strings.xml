@@ -38,6 +38,11 @@
     <string name="most_played_songs">Nejčastěji přehrávané skladby</string>
     <string name="most_played_artists">Nejčastěji přehrávaní umělci</string>
     <string name="most_played_albums">Nejčastěji přehrávaná alba</string>
+    <string name="weeks">Týdny</string>
+    <string name="months">Měsíce</string>
+    <string name="years">Roky</string>
+    <string name="continuous">Průběžné</string>
+
 
     <!-- Search -->
     <string name="search">Vyhledávání</string>
@@ -59,6 +64,9 @@
 
     <!-- Artist screen -->
     <string name="from_your_library">Z vaší knihovny</string>
+
+    <!-- Album screen -->
+    <string name="other_versions">Další verze</string>
 
     <!-- Library -->
     <string name="liked">Oblíbené</string>
@@ -104,6 +112,7 @@
     <string name="advanced">Pokročilé</string>
     <string name="select">Vybrat vše</string>
     <string name="like_all">Vše do oblíbených</string>
+    <string name="tempo_and_pitch">Tempo a výška</string>
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Datum přidání</string>
@@ -198,6 +207,12 @@
         <item quantity="many">%d prvků</item>
         <item quantity="other">%d prvků</item>
     </plurals>
+    <plurals name="n_time">
+        <item quantity="one">%d krát</item>
+        <item quantity="few">%d krát</item>
+        <item quantity="many">%d krát</item>
+        <item quantity="other">%d krát</item>
+    </plurals>
 
     <!-- Snackbar -->
     <string name="playlist_imported">Playlist importován</string>
@@ -232,6 +247,7 @@
     <!-- Queue Title -->
     <string name="queue_all_songs">Všechny skladby</string>
     <string name="queue_searched_songs">Hledané skladby</string>
+    <string name="similar_content">Podobný obsah</string>
 
     <!-- Notification name -->
     <string name="music_player">Hudební přehrávač</string>
@@ -239,21 +255,39 @@
     <!-- Settings -->
     <string name="settings">Nastavení</string>
     <string name="appearance">Vzhled</string>
+    <string name="theme">Motiv</string>
     <string name="enable_dynamic_theme">Povolit dynamický motiv</string>
     <string name="dark_theme">Tmavý motiv</string>
     <string name="dark_theme_on">Zap</string>
     <string name="dark_theme_off">Vyp</string>
     <string name="dark_theme_follow_system">Podle systému</string>
+    <string name="player_background_style">Styl pozadí přehrávače</string>
+    <string name="follow_theme">Podle systému</string>
+    <string name="gradient">Přechod</string>
+    <string name="enable_squiggly_slider">Povolit klikatou lištu</string>
+    <string name="enable_swipe_thumbnail">Povolit přejetí po náhledu pro změnu skladby</string>
     <string name="pure_black">Čistě černá</string>
-    <string name="default_open_tab">Výchozí karta</string>
     <string name="customize_navigation_tabs">Přizpůsobit karty navigace</string>
+    <string name="player">Přehrávač</string>
+    <string name="lyrics_text_position">Zarovnání textu přehrávače</string>
     <string name="lyrics_text_position">Pozice textů</string>
+    <string name="sided">Na straně</string>
     <string name="left">Vlevo</string>
     <string name="center">Uprostřed</string>
     <string name="right">Vpravo</string>
+    <string name="lyrics_click_change">Změnit texty po klepnutí</string>
+    <string name="grid_cell_size">Velikost položek mřížky</string>
+    <string name="small">Malé</string>
+    <string name="big">Velké</string>
+    <string name="player_slider_style">Styl lišty přehrávače</string>
+    <string name="default_">Výchozí</string>
+    <string name="squiggly">Klikatá</string>
+    <string name="misc">Různé</string>
+    <string name="default_open_tab">Výchozí karta</string>
 
     <string name="content">Obsah</string>
     <string name="login">Přihlásit se</string>
+    <string name="not_logged_in">Nejste přihlášeni</string>
     <string name="content_language">Výchozí jazyk obsahu</string>
     <string name="content_country">Výchozí země obsahu</string>
     <string name="system_default">Podle systému</string>
@@ -265,6 +299,13 @@
     <string name="set_quick_picks">Nastavit rychlý výběr</string>
     <string name="last_song_listened">Podle poslední poslouchané skladby</string>
     <string name="restart_to_take_effect">Restartujte pro uplatnění změn</string>
+    <string name="app_language">Jazyk aplikace</string>
+    <string name="configure_app_language">Nastavit jazyk aplikace</string>
+    <string name="intent_app_language_not_found">Nepodařilo se najít nastavení jazyka aplikace, nastavte je prosím ručně</string>
+    <string name="open_supported_links">Otevírat podporované odkazy</string>
+    <string name="configure_supported_links">Nastavit podporované odkazy</string>
+    <string name="intent_supported_links_not_found">Nepodařilo se najít nastavení podporovaných jazyků, nastavte je prosím ručně</string>
+    <string name="enable_similar_content">Povolit podobný obsah</string>
 
     <string name="player_and_audio">Přehrávání a zvuk</string>
     <string name="audio_quality">Kvalita zvuku</string>
@@ -272,8 +313,12 @@
     <string name="audio_quality_high">Vysoká</string>
     <string name="audio_quality_low">Nízká</string>
     <string name="persistent_queue">Ukládat frontu</string>
+    <string name="persistent_queue_desc">Obnovit poslední frontu po spuštění aplikace</string>
     <string name="skip_silence">Přeskakovat ticho</string>
     <string name="audio_normalization">Normalizace zvuku</string>
+    <string name="auto_skip_next_on_error">Automaticky přejít na další sklabdu při výskytu chyby</string>
+    <string name="auto_skip_next_on_error_desc">Zajistěte si nepřetržité přehrávání</string>
+    <string name="stop_music_on_task_clear">Zastavit hudbu po vymazání úlohy</string>
     <string name="equalizer">Ekvalizér</string>
 
     <string name="storage">Úložiště</string>
@@ -290,14 +335,20 @@
     <string name="size_used">Využito %s</string>
 
     <string name="privacy">Soukromí</string>
+    <string name="listen_history">Historie poslechu</string>
     <string name="pause_listen_history">Pozastavit historii poslechu</string>
     <string name="clear_listen_history">Vymazat historii poslechu</string>
     <string name="clear_listen_history_confirm">Opravdu chcete vymazat celou historii poslechu?</string>
+    <string name="search_history">Historie vyhledávání</string>
     <string name="pause_search_history">Pozastavit historii vyhledávání</string>
     <string name="clear_search_history">Vymazat historii vyhledávání</string>
     <string name="clear_search_history_confirm">Opravdu chcete vymazat celou historii vyhledávání?</string>
+    <string name="disable_screenshot">Zakázat snímky obrazovky</string>
+    <string name="disable_screenshot_desc">Po zapnutí budou zakázány snímky obrazovky a náhled aplikace v Nedávných.</string>+
     <string name="enable_kugou">Povolit poskytovatele textů KuGou</string>
     <string name="enable_lrclib">Povolit poskytovatele textů LrcLib</string>
+    <string name="set_first_lyrics_provider">Nastavit prvního poskytovatele textů</string>
+    <string name="hide_explicit">Skrýt explicitní obsah</string>
 
     <string name="backup_restore">Záloha a obnovení</string>
     <string name="backup">Zálohovat</string>
@@ -306,6 +357,15 @@
     <string name="backup_create_success">Záloha úspěšně vytvořena</string>
     <string name="backup_create_failed">Nepodařilo se vytvořit zálohu</string>
     <string name="restore_failed">Nepodařilo se obnovit zálohu</string>
+
+    <string name="discord_integration">Integrace Discordu</string>
+    <string name="discord_information">InnerTune používá knihovnu KizzyRPC, aby mohl nastavit váš stav na Discordu. Tato funkce zahrnuje připojení k bráně Discord, což může být považováno za porušení podmínek společnosti Discord. Neexistují nicméně žádné známé případy uzamčení účtu z tohoto důvodu. Používejte na vlastní nebezpečí.\n\nInnerTune pouze extrahuje váš token, vše ostatní je uloženo lokálně.</string>
+    <string name="dismiss">Zavřít</string>
+    <string name="options">Možnosti</string>
+    <string name="preview">Náhled</string>
+    <string name="login_failed">Přihlášení selhalo</string>
+    <string name="logout">Odhlásit se</string>
+    <string name="enable_discord_rpc">Povolit stav na Discordu</string>
 
     <string name="about">O aplikaci</string>
     <string name="app_version">Verze aplikace</string>
@@ -320,4 +380,11 @@
     <string name="past_month">Poslední měsíc</string>
     <string name="past_year">Poslední rok</string>
     <string name="top_length">Délka mého Seznamu nejlepších</string>
+    <string name="history_duration">Délka historie</string>
+    <plurals name="seconds">
+        <item quantity="one">1 sekunda</item>
+        <item quantity="other">%d sekundy</item>
+        <item quantity="other">%d sekund</item>
+        <item quantity="other">%d sekund</item>
+    </plurals>
 </resources>
