@@ -383,8 +383,8 @@
     <string name="history_duration">Délka historie</string>
     <plurals name="seconds">
         <item quantity="one">1 sekunda</item>
-        <item quantity="other">%d sekundy</item>
-        <item quantity="other">%d sekund</item>
+        <item quantity="few">%d sekundy</item>
+        <item quantity="many">%d sekund</item>
         <item quantity="other">%d sekund</item>
     </plurals>
 </resources>
