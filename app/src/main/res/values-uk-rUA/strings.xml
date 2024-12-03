@@ -336,14 +336,14 @@
 
     <string name="discord_integration">Інтеграція Discord</string>
     <string name="discord_information">InnerTune використовує бібліотеку KizzyRPC для встановлення статусу вашого облікового запису Discord. Це передбачає використання з\'єднання через шлюз Discord, що може вважатися порушенням Умов використання Discord. Однак, не відомо жодного випадку призупинення дії облікових записів користувачів з цієї причини. Використовуйте на власний ризик.\n\nInnerTune лише витягує ваш токен, а все інше зберігається локально.</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="options">Options</string>
-    <string name="preview">Preview</string>
-    <string name="login_failed">Login failed</string>
-    <string name="logout">Logout</string>
+    <string name="dismiss">Відхилити</string>
+    <string name="options">Параметри</string>
+    <string name="preview">Попередній перегляд</string>
+    <string name="login_failed">Вхід не вдався</string>
+    <string name="logout">Від\'єднатись</string>
     <string name="enable_discord_rpc">Увімкнути Rich Presence</string>
 
-    <string name="about">Про програму</string>
+    <string name="about">Про застосунок</string>
     <string name="app_version">Версія застосунку</string>
 
     <string name="new_version_available">Доступна нова версія</string>
