@@ -114,6 +114,7 @@
 
     <!-- Sort menu -->
     <string name="sort_by_create_date">Нещодавно додані</string>
+    <string name="sort_by_last_updated">Нещодавно оновлені</string>
     <string name="sort_by_name">Назва</string>
     <string name="sort_by_artist">Виконавець</string>
     <string name="sort_by_year">Рік</string>
@@ -235,7 +236,7 @@
     <string name="similar_content">Подібний контент</string>
 
     <!-- Notification name -->
-    <string name="music_player">Музичний плеєр</string>
+    <string name="music_player">Програвач музики</string>
 
     <!-- Settings -->
     <string name="settings">Параметри</string>
@@ -245,10 +246,18 @@
     <string name="dark_theme_on">Увімк.</string>
     <string name="dark_theme_off">Вимк.</string>
     <string name="dark_theme_follow_system">Використовувати налаштування системи</string>
+    <string name="player_background_style">Стиль фону програвача</string>
+    <string name="follow_theme">Дотримуватись теми</string>
+    <string name="gradient">Градієнт</string>
+    <string name="enable_squiggly_slider">Увімкнути хвилястий повзунок</string>
+    <string name="enable_swipe_thumbnail">Перемикання пісень свайпом по обкладинці</string>
     <string name="pure_black">Режим чистого чорного кольору</string>
     <string name="default_open_tab">Вкладка навігації за замовчуванням</string>
     <string name="customize_navigation_tabs">Налаштування вкладок навігації</string>
+    <string name="player">Програвач</string>
+    <string name="player_text_alignment">Вирівнювання тексту програвача</string>
     <string name="lyrics_text_position">Розташування тексту пісні</string>
+    <string name="sided">Бічний</string>
     <string name="left">Ліворуч</string>
     <string name="center">По центру</string>
     <string name="right">Праворуч</string>
@@ -283,7 +292,7 @@
     <string name="intent_supported_links_not_found">Не вдалося знайти налаштування підтримуваних посилань, будь ласка, налаштуйте їх вручну</string>
     <string name="enable_similar_content">Увімкнути подібний контент</string>
 
-    <string name="player_and_audio">Плеєр та аудіо</string>
+    <string name="player_and_audio">Програвач та аудіо</string>
     <string name="audio_quality">Якість аудіо</string>
     <string name="audio_quality_auto">Авто</string>
     <string name="audio_quality_high">Висока</string>
@@ -363,4 +372,3 @@
         <item quantity="many">%d cекунд</item>
         <item quantity="other">%d секунд</item>
     </plurals>
-</resources>
