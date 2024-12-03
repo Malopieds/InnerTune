@@ -294,7 +294,7 @@
     <string name="audio_normalization">Нормалізація аудіо</string>
     <string name="auto_skip_next_on_error">Автоматично пропускати до наступної пісні в разі виникнення помилки</string>
     <string name="auto_skip_next_on_error_desc">Забезпечте безперервне відтворення</string>
-    <string name="stop_music_on_task_clear">Зупинити музику при завершенні процесу</string>
+    <string name="stop_music_on_task_clear">Зупинити музику при закритті вкладки</string>
     <string name="equalizer">Еквалайзер</string>
 
     <string name="storage">Сховище</string>
