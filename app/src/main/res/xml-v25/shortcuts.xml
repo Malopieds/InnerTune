@@ -8,7 +8,7 @@
         <intent
             android:targetClass="com.malopieds.innertune.MainActivity"
             android:targetPackage="com.malopieds.innertune"
-            android:action="com.zionhuang.music.action.SEARCH" />
+            android:action="com.malopieds.innertune.action.SEARCH" />
     </shortcut>
     <shortcut
         android:shortcutId="explore"

@@ -48,6 +48,7 @@ import com.malopieds.innertune.constants.ProxyUrlKey
 import com.malopieds.innertune.constants.QuickPicks
 import com.malopieds.innertune.constants.QuickPicksKey
 import com.malopieds.innertune.constants.SYSTEM_DEFAULT
+import com.malopieds.innertune.constants.SimilarContent
 import com.malopieds.innertune.constants.TopSize
 import com.malopieds.innertune.ui.component.EditTextPreference
 import com.malopieds.innertune.ui.component.IconButton
@@ -86,6 +87,7 @@ fun ContentSettings(
     val (historyDuration, onHistoryDurationChange) = rememberPreference(key = HistoryDuration, defaultValue = 30f)
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
+    val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(key = SimilarContent, defaultValue = true)
 
     Column(
         Modifier
@@ -251,6 +253,12 @@ fun ContentSettings(
             title = { Text(stringResource(R.string.history_duration)) },
             value = historyDuration,
             onValueChange = onHistoryDurationChange,
+        )
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.enable_similar_content)) },
+            checked = similarContentEnabled,
+            onCheckedChange = similarContentEnabledChange,
         )
     }
 

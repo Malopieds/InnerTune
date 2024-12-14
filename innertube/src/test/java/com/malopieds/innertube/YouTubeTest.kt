@@ -35,7 +35,6 @@ class YouTubeTest {
             val playerResponse = youTube.player(videoId).getOrThrow()
             val format = playerResponse.streamingData!!.adaptiveFormats[0]
             val url = format.url!!
-            println(url)
             val response = HttpClient(OkHttp).get(url) {
                 headers {
                     append("Range", "bytes=0-10")
@@ -69,7 +68,7 @@ class YouTubeTest {
         var searchResult = youTube.search(SEARCH_QUERY, FILTER_SONG).getOrThrow()
         while (searchResult.continuation != null && count > 0) {
             searchResult.items.forEach {
-                println(it.title)
+
             }
             searchResult = youTube.searchContinuation(searchResult.continuation!!).getOrThrow()
             count -= 1

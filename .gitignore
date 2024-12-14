@@ -87,3 +87,7 @@ lint/tmp/
 
 .DS_Store
 /app/release/output-metadata.json
+
+.kotlin
+app/foss
+output-metadata.json

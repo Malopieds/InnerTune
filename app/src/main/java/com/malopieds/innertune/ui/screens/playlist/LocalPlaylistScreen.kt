@@ -432,7 +432,7 @@ fun LocalPlaylistScreen(
                                     )
                                 }
 
-                                if (!selection) {
+                                if (!selection && sortType == PlaylistSongSortType.CUSTOM && !isSearching) {
                                     IconButton(
                                         onClick = { locked = !locked },
                                         modifier = Modifier.padding(horizontal = 6.dp),
@@ -539,7 +539,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && isSearching) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !isSearching) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.detectReorder(reorderableState),
@@ -673,7 +673,7 @@ fun LocalPlaylistScreen(
                                         )
                                     }
 
-                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked) {
+                                    if (sortType == PlaylistSongSortType.CUSTOM && !locked && !selection && !isSearching) {
                                         IconButton(
                                             onClick = { },
                                             modifier = Modifier.detectReorder(reorderableState),

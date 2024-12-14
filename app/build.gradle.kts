@@ -18,8 +18,8 @@ android {
         applicationId = "com.malopieds.innertune"
         minSdk = 24
         targetSdk = 35
-        versionCode = 26
-        versionName = "0.5.9"
+        versionCode = 29
+        versionName = "0.5.12"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
