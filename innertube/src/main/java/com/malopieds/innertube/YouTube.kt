@@ -888,23 +888,23 @@ object YouTube {
     ): Result<PlayerResponse> =
         runCatching {
             var playerResponse: PlayerResponse
-            if (this.cookie != null) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
+            if (this.cookie != null && false) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
                 playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
                 if (playerResponse.playabilityStatus.status == "OK") {
                     println("there")
                     return@runCatching playerResponse
                 }
             }
-            try {
-                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
-                if (safePlayerResponse.isValid) {
-                    return@runCatching safePlayerResponse
-                }
-            } catch (e: Exception) {
-                error(e)
-            }
-            playerResponse =
-                innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
+//            try {
+//                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
+//                if (safePlayerResponse.isValid) {
+//                    return@runCatching safePlayerResponse
+//                }
+//            } catch (e: Exception) {
+//                error(e)
+//            }
+
+            playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
             if (playerResponse.playabilityStatus.status == "OK") {
                 return@runCatching playerResponse
             }
