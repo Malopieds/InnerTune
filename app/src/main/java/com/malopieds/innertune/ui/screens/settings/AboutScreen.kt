@@ -41,6 +41,11 @@ import com.malopieds.innertune.LocalPlayerAwareWindowInsets
 import com.malopieds.innertune.R
 import com.malopieds.innertune.ui.component.IconButton
 import com.malopieds.innertune.ui.utils.backToMain
+import com.malopieds.innertune.constants.CheckForUpdatesKey
+import com.malopieds.innertune.constants.CheckForPrereleasesKey
+import com.malopieds.innertune.ui.component.SwitchPreference
+import com.malopieds.innertune.utils.rememberPreference
+import androidx.compose.animation.AnimatedVisibility
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +53,10 @@ fun AboutScreen(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+
+    val (checkForUpdates, onCheckForUpdatesChange) = rememberPreference(key = CheckForUpdatesKey, defaultValue = true)
+    val (checkForPrereleases, onCheckForPrereleasesChange) = rememberPreference(key = CheckForPrereleasesKey, defaultValue = false)
+
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -149,6 +158,22 @@ fun AboutScreen(
                     contentDescription = null,
                 )
             }
+        }
+
+        SwitchPreference(
+            title = { Text(stringResource(R.string.check_for_updates)) },
+            icon = { Icon(painterResource(R.drawable.update), null) },
+            checked = checkForUpdates,
+            onCheckedChange = onCheckForUpdatesChange,
+        )
+
+        AnimatedVisibility(checkForUpdates) {
+            SwitchPreference(
+                title = { Text(stringResource(R.string.check_for_prereleases)) },
+                icon = { Icon(painterResource(R.drawable.fast_forward), null) },
+                checked = checkForPrereleases,
+                onCheckedChange = onCheckForPrereleasesChange,
+            )
         }
     }
 
