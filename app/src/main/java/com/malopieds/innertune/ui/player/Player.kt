@@ -154,10 +154,12 @@ fun BottomSheetPlayer(
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)
     val pureBlack by rememberPreference(PureBlackKey, defaultValue = false)
+    val playerBackground by rememberEnumPreference(PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
     val useBlackBackground =
-        remember(isSystemInDarkTheme, darkTheme, pureBlack) {
+        remember(isSystemInDarkTheme, darkTheme, pureBlack, playerBackground) {
             val useDarkTheme = if (darkTheme == DarkMode.AUTO) isSystemInDarkTheme else darkTheme == DarkMode.ON
-            useDarkTheme && pureBlack
+            val usePureBlackPlayerBackground = (playerBackground == PlayerBackgroundStyle.DEFAULT)
+            useDarkTheme && pureBlack && usePureBlackPlayerBackground
         }
 
     val playerTextAlignment by rememberEnumPreference(PlayerTextAlignmentKey, PlayerTextAlignment.SIDED)
@@ -172,7 +174,6 @@ fun BottomSheetPlayer(
     val canSkipNext by playerConnection.canSkipNext.collectAsState()
 
     var showLyrics by rememberPreference(ShowLyricsKey, defaultValue = false)
-    val playerBackground by rememberEnumPreference(key = PlayerBackgroundStyleKey, defaultValue = PlayerBackgroundStyle.DEFAULT)
 
     val sliderStyle by rememberEnumPreference(SliderStyleKey, SliderStyle.DEFAULT)
 
@@ -198,7 +199,7 @@ fun BottomSheetPlayer(
         playerConnection.service.addToQueueAutomix(automix[0], 0)
     }
 
-    LaunchedEffect(mediaMetadata, playerBackground) {
+    LaunchedEffect(mediaMetadata, playerBackground, darkTheme, useBlackBackground) {
         if (useBlackBackground) {
             gradientColors = listOf(Color.Black, Color.Black)
         } else if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
@@ -229,40 +230,51 @@ fun BottomSheetPlayer(
 
     val changeBound = state.expandedBound / 3
 
+    val hasGradientColours : Boolean = gradientColors.size >= 2
+    val whiteContrastThreshold = 2.0
+    val blackContrastThreshold = 2.0
+
+    val whiteGradientContrast : Double = when {
+        hasGradientColours -> {
+            ColorUtils.calculateContrast(
+                gradientColors.first().toArgb(),
+                Color.White.toArgb(),
+            )
+        }
+        else -> whiteContrastThreshold
+    }
+
+    val blackGradientContrast : Double = when {
+        hasGradientColours -> {
+            ColorUtils.calculateContrast(
+                gradientColors.last().toArgb(),
+                Color.Black.toArgb(),
+            )
+        }
+        else -> blackContrastThreshold
+    }
+
     val onBackgroundColor =
         when (playerBackground) {
             PlayerBackgroundStyle.DEFAULT -> MaterialTheme.colorScheme.onBackground
             else -> {
-                val whiteContrast =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.first().toArgb(),
-                            Color.White.toArgb(),
-                        )
-                    } else {
-                        2.0
+                when {
+                    hasGradientColours &&
+                            whiteGradientContrast < whiteContrastThreshold &&
+                            blackGradientContrast > blackContrastThreshold -> {
+                        changeColor = true
+                        Color.Black
                     }
-                val blackContrast: Double =
-                    if (gradientColors.size >= 2) {
-                        ColorUtils.calculateContrast(
-                            gradientColors.last().toArgb(),
-                            Color.Black.toArgb(),
-                        )
-                    } else {
-                        2.0
+                    hasGradientColours &&
+                            whiteGradientContrast > whiteContrastThreshold &&
+                            blackGradientContrast < blackContrastThreshold -> {
+                        changeColor = true
+                        Color.White
                     }
-                if (gradientColors.size >= 2 &&
-                    whiteContrast < 2f &&
-                    blackContrast > 2f
-                ) {
-                    changeColor = true
-                    Color.Black
-                } else if (whiteContrast > 2f && blackContrast < 2f) {
-                    changeColor = true
-                    Color.White
-                } else {
-                    changeColor = false
-                    MaterialTheme.colorScheme.onSurface
+                    else -> {
+                        changeColor = false
+                        MaterialTheme.colorScheme.onSurface
+                    }
                 }
             }
         }
@@ -524,8 +536,7 @@ fun BottomSheetPlayer(
         state = state,
         modifier = modifier,
         brushBackgroundColor =
-            if (gradientColors.size >=
-                2 &&
+            if (hasGradientColours &&
                 state.value > changeBound
             ) {
                 Brush.verticalGradient(gradientColors)
