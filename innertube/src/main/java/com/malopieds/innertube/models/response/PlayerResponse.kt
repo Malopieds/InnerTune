@@ -2,7 +2,6 @@ package com.malopieds.innertube.models.response
 
 import com.malopieds.innertube.models.ResponseContext
 import com.malopieds.innertube.models.Thumbnails
-import com.malopieds.innertube.utils.createUrl
 import kotlinx.serialization.Serializable
 
 /**
@@ -62,8 +61,6 @@ data class PlayerResponse(
         ) {
             val isAudio: Boolean
                 get() = width == null
-
-            fun findUrl() = url?.let { createUrl(url = it) } ?: signatureCipher?.let { createUrl(cipher = it) }!!
         }
     }
 
@@ -78,4 +75,8 @@ data class PlayerResponse(
         val viewCount: String,
         val thumbnail: Thumbnails,
     )
+
+    fun statusOk(): Boolean {
+        return playabilityStatus.status == "OK"
+    }
 }

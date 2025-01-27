@@ -12,10 +12,8 @@ import com.malopieds.innertube.models.body.GetTranscriptBody
 import com.malopieds.innertube.models.body.NextBody
 import com.malopieds.innertube.models.body.PlayerBody
 import com.malopieds.innertube.models.body.SearchBody
-import com.malopieds.innertube.utils.nSigDecode
 import com.malopieds.innertube.utils.parseCookieString
 import com.malopieds.innertube.utils.sha1
-import com.malopieds.innertube.utils.sigDecode
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.compression.ContentEncoding
@@ -28,9 +26,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
-import io.ktor.http.parseQueryString
 import io.ktor.http.userAgent
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.encodeBase64
@@ -95,7 +91,7 @@ class InnerTube {
             }
 
             defaultRequest {
-                url("https://music.youtube.com/youtubei/v1/")
+                url(YouTubeClient.API_URL_YOUTUBE_MUSIC)
             }
         }
 
@@ -106,18 +102,16 @@ class InnerTube {
         contentType(ContentType.Application.Json)
         headers {
             append("X-Goog-Api-Format-Version", "1")
-            append("X-YouTube-Client-Name", client.clientName)
+            append("X-YouTube-Client-Name", client.clientId)
             append("X-YouTube-Client-Version", client.clientVersion)
-            append("x-origin", "https://music.youtube.com")
-            if (client.referer != null) {
-                append("Referer", client.referer)
-            }
-            if (setLogin) {
+            append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
+            append("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
+            if (setLogin && client.loginSupported) {
                 cookie?.let { cookie ->
                     append("cookie", cookie)
                     if ("SAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} ${YouTubeClient.ORIGIN_YOUTUBE_MUSIC}")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
             }
@@ -149,6 +143,7 @@ class InnerTube {
         client: YouTubeClient,
         videoId: String,
         playlistId: String?,
+        signatureTimestamp: Int?
     ) = httpClient.post("player") {
         ytClient(client, setLogin = true)
         setBody(
@@ -168,6 +163,12 @@ class InnerTube {
                     },
                 videoId = videoId,
                 playlistId = playlistId,
+                playbackContext =
+                    if (client.useSignatureTimestamp && signatureTimestamp != null) {
+                        PlayerBody.PlaybackContext(contentPlaybackContext = PlayerBody.ContentPlaybackContext(
+                            signatureTimestamp = signatureTimestamp
+                        ))
+                    } else null
             ),
         )
     }

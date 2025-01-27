@@ -13,8 +13,7 @@ import com.malopieds.innertube.models.SearchSuggestions
 import com.malopieds.innertube.models.SongItem
 import com.malopieds.innertube.models.WatchEndpoint
 import com.malopieds.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
-import com.malopieds.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
-import com.malopieds.innertube.models.YouTubeClient.Companion.IOS
+import com.malopieds.innertube.models.YouTubeClient
 import com.malopieds.innertube.models.YouTubeClient.Companion.WEB
 import com.malopieds.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.malopieds.innertube.models.YouTubeLocale
@@ -26,7 +25,6 @@ import com.malopieds.innertube.models.response.GetQueueResponse
 import com.malopieds.innertube.models.response.GetSearchSuggestionsResponse
 import com.malopieds.innertube.models.response.GetTranscriptResponse
 import com.malopieds.innertube.models.response.NextResponse
-import com.malopieds.innertube.models.response.PipedResponse
 import com.malopieds.innertube.models.response.PlayerResponse
 import com.malopieds.innertube.models.response.SearchResponse
 import com.malopieds.innertube.pages.AlbumPage
@@ -882,47 +880,18 @@ object YouTube {
             playabilityStatus.status == "OK" &&
                 streamingData?.adaptiveFormats?.any { it.url != null || it.signatureCipher != null } == true
 
+    /**
+     *
+     */
     suspend fun player(
         videoId: String,
         playlistId: String? = null,
+        client: YouTubeClient = YouTubeClient.MAIN_CLIENT,
+        signatureTimestamp: Int? = null,
     ): Result<PlayerResponse> =
         runCatching {
-            var playerResponse: PlayerResponse
-            if (this.cookie != null && false) { // if logged in: try ANDROID_MUSIC client first because IOS client does not play age restricted songs
-                playerResponse = innerTube.player(ANDROID_MUSIC, videoId, playlistId).body<PlayerResponse>()
-                if (playerResponse.playabilityStatus.status == "OK") {
-                    println("there")
-                    return@runCatching playerResponse
-                }
-            }
-//            try {
-//                val safePlayerResponse = innerTube.player(WEB_REMIX, videoId, playlistId).body<PlayerResponse>()
-//                if (safePlayerResponse.isValid) {
-//                    return@runCatching safePlayerResponse
-//                }
-//            } catch (e: Exception) {
-//                error(e)
-//            }
-
-            playerResponse = innerTube.player(IOS, videoId, playlistId).body<PlayerResponse>()
-            if (playerResponse.playabilityStatus.status == "OK") {
-                return@runCatching playerResponse
-            }
-            val audioStreams = innerTube.pipedStreams(videoId).body<PipedResponse>().audioStreams
-            playerResponse.copy(
-                streamingData =
-                    playerResponse.streamingData?.copy(
-                        adaptiveFormats =
-                            playerResponse.streamingData!!.adaptiveFormats.mapNotNull { adaptiveFormat ->
-                                audioStreams.find { it.bitrate == adaptiveFormat.bitrate }?.let {
-                                    adaptiveFormat.copy(
-                                        url = it.url,
-                                    )
-                                }
-                            },
-                    ),
-            )
-        }
+        innerTube.player(client, videoId, playlistId, signatureTimestamp).body<PlayerResponse>()
+    }
 
     suspend fun next(
         endpoint: WatchEndpoint,
