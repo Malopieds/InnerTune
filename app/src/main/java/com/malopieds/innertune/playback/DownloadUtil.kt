@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
-import androidx.media3.common.PlaybackException
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
@@ -13,6 +12,7 @@ import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
+import com.malopieds.innertune.utils.YTPlayerUtils
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertune.constants.AudioQuality
 import com.malopieds.innertune.constants.AudioQualityKey
@@ -73,34 +73,16 @@ class DownloadUtil
                 }
 
                 val playedFormat = runBlocking(Dispatchers.IO) { database.format(mediaId).first() }
-                val playerResponse =
+                val playbackData =
                     runBlocking(Dispatchers.IO) {
-                        YouTube.player(mediaId)
+                        YTPlayerUtils.playerResponseForPlayback(
+                            mediaId,
+                            playedFormat = playedFormat,
+                            audioQuality = audioQuality,
+                            connectivityManager = connectivityManager,
+                        )
                     }.getOrThrow()
-                if (playerResponse.playabilityStatus.status != "OK") {
-                    throw PlaybackException(playerResponse.playabilityStatus.reason, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
-                }
-
-                val format =
-                    if (playedFormat != null) {
-                        playerResponse.streamingData?.adaptiveFormats?.find { it.itag == playedFormat.itag }
-                    } else {
-                        playerResponse.streamingData
-                            ?.adaptiveFormats
-                            ?.filter { it.isAudio }
-                            ?.maxByOrNull {
-                                it.bitrate *
-                                    when (audioQuality) {
-                                        AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                        AudioQuality.HIGH -> 1
-                                        AudioQuality.LOW -> -1
-                                    } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                            }
-                    }!!.let {
-                        // Specify range to avoid YouTube's throttling
-                        val url = if (it.url != null) it.url else it.findUrl()
-                        it.copy(url = "${url}&range=0-${it.contentLength ?: 10000000}")
-                    }
+                val format = playbackData.format
 
                 database.query {
                     upsert(
@@ -112,13 +94,18 @@ class DownloadUtil
                             bitrate = format.bitrate,
                             sampleRate = format.audioSampleRate,
                             contentLength = format.contentLength!!,
-                            loudnessDb = playerResponse.playerConfig?.audioConfig?.loudnessDb,
+                            loudnessDb = playbackData.audioConfig?.loudnessDb
                         ),
                     )
                 }
 
-                songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-                dataSpec.withUri(format.url!!.toUri())
+                val streamURL = playbackData.streamUrl.let {
+                    // Avoid being throttled
+                    "${it}&range=0-${format.contentLength ?: 10000000}"
+                }
+                val expirationTime = System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
+                songUrlCache[mediaId] = streamURL to expirationTime
+                dataSpec.withUri(streamURL.toUri())
             }
         val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
         val downloadManager: DownloadManager =

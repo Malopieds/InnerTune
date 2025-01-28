@@ -49,15 +49,14 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
+import com.malopieds.innertune.utils.YTPlayerUtils
 import com.google.common.util.concurrent.MoreExecutors
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertube.models.SongItem
 import com.malopieds.innertube.models.WatchEndpoint
-import com.malopieds.innertube.models.response.PlayerResponse
 import com.malopieds.innertune.MainActivity
 import com.malopieds.innertune.R
 import com.malopieds.innertune.constants.AudioNormalizationKey
-import com.malopieds.innertune.constants.AudioQuality
 import com.malopieds.innertune.constants.AudioQualityKey
 import com.malopieds.innertune.constants.AutoSkipNextOnErrorKey
 import com.malopieds.innertune.constants.DiscordTokenKey
@@ -423,7 +422,7 @@ class MusicService :
 
     private suspend fun recoverSong(
         mediaId: String,
-        playerResponse: PlayerResponse? = null,
+        playerResponse: YTPlayerUtils.PlaybackData? = null,
     ) {
         val song = database.song(mediaId).first()
         val mediaMetadata =
@@ -433,7 +432,8 @@ class MusicService :
         val duration =
             song?.song?.duration?.takeIf { it != -1 }
                 ?: mediaMetadata.duration.takeIf { it != -1 }
-                ?: (playerResponse ?: YouTube.player(mediaId).getOrNull())?.videoDetails?.lengthSeconds?.toInt()
+                ?: (playerResponse?.videoDetails ?: YTPlayerUtils.playerResponseForMetadata(videoId = mediaId).getOrNull()
+                    ?.videoDetails)?.lengthSeconds?.toInt()
                 ?: -1
         database.query {
             if (song == null) {
@@ -746,7 +746,12 @@ class MusicService :
             val playedFormat = runBlocking(Dispatchers.IO) { database.format(mediaId).first() }
             val playerResponse =
                 runBlocking(Dispatchers.IO) {
-                    YouTube.player(mediaId)
+                    YTPlayerUtils.playerResponseForPlayback(
+                        mediaId,
+                        playedFormat = playedFormat,
+                        audioQuality = audioQuality,
+                        connectivityManager = connectivityManager,
+                    )
                 }.getOrElse { throwable ->
                     when (throwable) {
                         is ConnectException, is UnknownHostException -> {
@@ -772,39 +777,7 @@ class MusicService :
                         )
                     }
                 }
-            if (playerResponse.playabilityStatus.status != "OK") {
-                throw PlaybackException(playerResponse.playabilityStatus.reason, null, PlaybackException.ERROR_CODE_REMOTE_ERROR)
-            }
-
-            val format =
-                if (playedFormat != null) {
-                    playerResponse.streamingData?.adaptiveFormats?.find {
-                        // Use itag to identify previously played format
-                        it.itag == playedFormat.itag
-                    } ?: playerResponse.streamingData
-                        ?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate *
-                                when (audioQuality) {
-                                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                    AudioQuality.HIGH -> 1
-                                    AudioQuality.LOW -> -1
-                                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                        }
-                } else {
-                    playerResponse.streamingData
-                        ?.adaptiveFormats
-                        ?.filter { it.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate *
-                                when (audioQuality) {
-                                    AudioQuality.AUTO -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                    AudioQuality.HIGH -> 1
-                                    AudioQuality.LOW -> -1
-                                } + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-                        }
-                } ?: throw PlaybackException(getString(R.string.error_no_stream), null, ERROR_CODE_NO_STREAM)
+            val format = playerResponse.format
 
             database.query {
                 upsert(
@@ -816,19 +789,15 @@ class MusicService :
                         bitrate = format.bitrate,
                         sampleRate = format.audioSampleRate,
                         contentLength = format.contentLength!!,
-                        loudnessDb = playerResponse.playerConfig?.audioConfig?.loudnessDb,
+                        loudnessDb = playerResponse.audioConfig?.loudnessDb,
                     ),
                 )
             }
             scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
-            if (format.url != null) {
-                songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-                dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
-            } else {
-                songUrlCache[mediaId] = format.findUrl() to playerResponse.streamingData!!.expiresInSeconds * 1000L
-                dataSpec.withUri(format.findUrl().toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
-            }
-
+            val streamURL = playerResponse.streamUrl
+            val expirationTime = System.currentTimeMillis() + playerResponse.streamExpiresInSeconds * 1000L
+            songUrlCache[mediaId] = streamURL to expirationTime
+            dataSpec.withUri(streamURL.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 
@@ -965,7 +934,6 @@ class MusicService :
 
         const val CHANNEL_ID = "music_channel_01"
         const val NOTIFICATION_ID = 888
-        const val ERROR_CODE_NO_STREAM = 1000001
         const val CHUNK_LENGTH = 512 * 1024L
         const val PERSISTENT_QUEUE_FILE = "persistent_queue.data"
         const val PERSISTENT_AUTOMIX_FILE = "persistent_automix.data"
