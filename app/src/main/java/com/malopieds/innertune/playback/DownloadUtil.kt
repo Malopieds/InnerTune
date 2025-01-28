@@ -99,9 +99,13 @@ class DownloadUtil
                     )
                 }
 
+                val streamURL = playbackData.streamUrl.let {
+                    // Avoid being throttled
+                    "${it}&range=0-${format.contentLength ?: 10000000}"
+                }
                 val expirationTime = System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)
-                songUrlCache[mediaId] = playbackData.streamUrl to expirationTime
-                dataSpec.withUri(format.url!!.toUri())
+                songUrlCache[mediaId] = streamURL to expirationTime
+                dataSpec.withUri(streamURL.toUri())
             }
         val downloadNotificationHelper = DownloadNotificationHelper(context, ExoDownloadService.CHANNEL_ID)
         val downloadManager: DownloadManager =

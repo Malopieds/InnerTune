@@ -117,7 +117,6 @@ class InnerTube {
             }
         }
         userAgent(client.userAgent)
-        parameter("key", client.api_key)
         parameter("prettyPrint", false)
     }
 
