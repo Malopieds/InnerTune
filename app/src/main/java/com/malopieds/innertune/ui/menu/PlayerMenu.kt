@@ -4,7 +4,6 @@ import android.content.Intent
 import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,8 +24,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -82,6 +83,7 @@ import java.time.LocalDateTime
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 @Composable
 fun PlayerMenu(
@@ -440,81 +442,157 @@ fun TempoPitchDialog(onDismiss: () -> Unit) {
         },
         text = {
             Column {
-                ValueAdjuster(
-                    icon = R.drawable.speed,
-                    currentValue = tempo,
-                    values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
-                    onValueUpdate = {
-                        tempo = it
-                        updatePlaybackParameters()
-                    },
-                    valueText = { "x$it" },
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
-                ValueAdjuster(
-                    icon = R.drawable.discover_tune,
-                    currentValue = transposeValue,
-                    values = (-12..12).toList(),
-                    onValueUpdate = {
-                        transposeValue = it
-                        updatePlaybackParameters()
-                    },
-                    valueText = { "${if (it > 0) "+" else ""}$it" },
-                )
+//                ValueAdjuster(
+//                    icon = R.drawable.speed,
+//                    currentValue = tempo,
+//                    values = (0..35).map { round((0.25f + it * 0.05f) * 100) / 100 },
+//                    onValueUpdate = {
+//                        tempo = it
+//                        updatePlaybackParameters()
+//                    },
+//                    valueText = { "x$it" },
+//                    modifier = Modifier.padding(bottom = 12.dp),
+//                )
+//                ValueAdjuster(
+//                    icon = R.drawable.discover_tune,
+//                    currentValue = transposeValue,
+//                    values = (-12..12).toList(),
+//                    onValueUpdate = {
+//                        transposeValue = it
+//                        updatePlaybackParameters()
+//                    },
+//                    valueText = { "${if (it > 0) "+" else ""}$it" },
+//                )
+
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.speed),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 32.dp)
+                    )
+                    
+                    Slider(
+                        value = tempo,
+                        onValueChange = {
+                            tempo = (it * 20).roundToInt() / 20f
+                            updatePlaybackParameters()
+                        },
+                        steps = 35,
+                        valueRange = 0.25f..2f,
+                        colors = SliderDefaults.colors(
+                            activeTickColor = Color.Transparent,
+                            inactiveTickColor = Color.Transparent,
+                            disabledActiveTickColor = Color.Transparent,
+                            disabledInactiveTickColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .weight(2f)
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 16.dp)
+                    )
+
+                    Text(
+                        text = tempo.toString(),
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .width(40.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
+
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.discover_tune),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 32.dp)
+                    )
+
+                    Slider(
+                        value = (transposeValue.toFloat() + 12f),
+                        onValueChange = {
+                            transposeValue = (it - 12).toInt()
+                            updatePlaybackParameters()
+                        },
+                        steps = 24,
+                        valueRange = 0f..24f,
+                        colors = SliderDefaults.colors(
+                            activeTickColor = Color.Transparent,
+                            inactiveTickColor = Color.Transparent,
+                            disabledActiveTickColor = Color.Transparent,
+                            disabledInactiveTickColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .weight(2f)
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 16.dp)
+                    )
+
+                    Text(
+                        text = transposeValue.toString(),
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .width(40.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
             }
         },
     )
 }
 
-@Composable
-fun <T> ValueAdjuster(
-    @DrawableRes icon: Int,
-    currentValue: T,
-    values: List<T>,
-    onValueUpdate: (T) -> Unit,
-    valueText: (T) -> String,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier,
-    ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            modifier = Modifier.size(28.dp),
-        )
-
-        IconButton(
-            enabled = currentValue != values.first(),
-            onClick = {
-                onValueUpdate(values[values.indexOf(currentValue) - 1])
-            },
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.remove),
-                contentDescription = null,
-            )
-        }
-
-        Text(
-            text = valueText(currentValue),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.width(80.dp),
-        )
-
-        IconButton(
-            enabled = currentValue != values.last(),
-            onClick = {
-                onValueUpdate(values[values.indexOf(currentValue) + 1])
-            },
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.add),
-                contentDescription = null,
-            )
-        }
-    }
-}
+//@Composable
+//fun <T> ValueAdjuster(
+//    @DrawableRes icon: Int,
+//    currentValue: T,
+//    values: List<T>,
+//    onValueUpdate: (T) -> Unit,
+//    valueText: (T) -> String,
+//    modifier: Modifier = Modifier,
+//) {
+//    Row(
+//        horizontalArrangement = Arrangement.spacedBy(24.dp),
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = modifier,
+//    ) {
+//        Icon(
+//            painter = painterResource(icon),
+//            contentDescription = null,
+//            modifier = Modifier.size(28.dp),
+//        )
+//
+//        IconButton(
+//            enabled = currentValue != values.first(),
+//            onClick = {
+//                onValueUpdate(values[values.indexOf(currentValue) - 1])
+//            },
+//        ) {
+//            Icon(
+//                painter = painterResource(R.drawable.remove),
+//                contentDescription = null,
+//            )
+//        }
+//
+//        Text(
+//            text = valueText(currentValue),
+//            style = MaterialTheme.typography.titleMedium,
+//            textAlign = TextAlign.Center,
+//            modifier = Modifier.width(80.dp),
+//        )
+//
+//        IconButton(
+//            enabled = currentValue != values.last(),
+//            onClick = {
+//                onValueUpdate(values[values.indexOf(currentValue) + 1])
+//            },
+//        ) {
+//            Icon(
+//                painter = painterResource(R.drawable.add),
+//                contentDescription = null,
+//            )
+//        }
+//    }
+//}
