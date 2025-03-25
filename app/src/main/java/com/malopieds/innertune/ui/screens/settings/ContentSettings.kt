@@ -47,6 +47,7 @@ import com.malopieds.innertune.constants.ProxyTypeKey
 import com.malopieds.innertune.constants.ProxyUrlKey
 import com.malopieds.innertune.constants.QuickPicks
 import com.malopieds.innertune.constants.QuickPicksKey
+import com.malopieds.innertune.constants.StopMusicOnTaskClearKey
 import com.malopieds.innertune.constants.SYSTEM_DEFAULT
 import com.malopieds.innertune.constants.SimilarContent
 import com.malopieds.innertune.constants.TopSize
@@ -88,6 +89,7 @@ fun ContentSettings(
     val (defaultChip, onDefaultChipChange) = rememberEnumPreference(key = ChipSortTypeKey, defaultValue = LibraryFilter.LIBRARY)
     val (quickPicks, onQuickPicksChange) = rememberEnumPreference(key = QuickPicksKey, defaultValue = QuickPicks.QUICK_PICKS)
     val (similarContentEnabled, similarContentEnabledChange) = rememberPreference(key = SimilarContent, defaultValue = true)
+    val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(key = StopMusicOnTaskClearKey, defaultValue = false)
 
     Column(
         Modifier
