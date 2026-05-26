@@ -63,7 +63,7 @@ data class ArtistPage(
                         ?.text ?: return null,
                 items =
                     renderer.contents?.mapNotNull {
-                        fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                        fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                     } ?: return null,
                 moreEndpoint =
                     renderer.title.runs

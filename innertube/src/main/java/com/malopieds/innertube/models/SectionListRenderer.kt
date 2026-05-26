@@ -47,5 +47,6 @@ data class SectionListRenderer(
         val gridRenderer: GridRenderer?,
         val musicResponsiveHeaderRenderer: BrowseResponse.Header.MusicHeaderRenderer?,
         val musicEditablePlaylistDetailHeaderRenderer: BrowseResponse.Header.MusicEditablePlaylistDetailHeaderRenderer?,
+        val musicDetailHeaderRenderer: BrowseResponse.Header.MusicDetailHeaderRenderer?,
     )
 }

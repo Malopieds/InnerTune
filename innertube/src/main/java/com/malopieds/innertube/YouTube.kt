@@ -156,7 +156,7 @@ object YouTube {
                                     items =
                                         it.musicShelfRenderer.contents
                                             ?.mapNotNull {
-                                                SearchSummaryPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                                                SearchSummaryPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                                             }?.distinctBy { it.id }
                                             ?.ifEmpty { null } ?: return@mapNotNull null,
                                 )
@@ -185,7 +185,7 @@ object YouTube {
                         ?.musicShelfRenderer
                         ?.contents
                         ?.mapNotNull {
-                            SearchPage.toYTItem(it.musicResponsiveListItemRenderer)
+                            SearchPage.toYTItem(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                         }.orEmpty(),
                 continuation =
                     response.contents
@@ -212,7 +212,7 @@ object YouTube {
                         ?.musicShelfContinuation
                         ?.contents
                         ?.mapNotNull {
-                            SearchPage.toYTItem(it.musicResponsiveListItemRenderer)
+                            SearchPage.toYTItem(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                         }!!,
                 continuation =
                     response.continuationContents.musicShelfContinuation.continuations
@@ -337,7 +337,7 @@ object YouTube {
                 ?.musicPlaylistShelfRenderer
                 ?.contents
                 ?.mapNotNull {
-                    AlbumPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                    AlbumPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                 }!!
         }
 
@@ -461,7 +461,7 @@ object YouTube {
                             ?.musicPlaylistShelfRenderer
                             ?.contents
                             ?.mapNotNull {
-                                ArtistItemsPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                                ArtistItemsPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                             }!!,
                     continuation =
                         response.contents.singleColumnBrowseResultsRenderer.tabs
@@ -484,7 +484,7 @@ object YouTube {
             ArtistItemsContinuationPage(
                 items =
                     response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
-                        ArtistItemsContinuationPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                        ArtistItemsContinuationPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                     }!!,
                 continuation =
                     response.continuationContents.musicPlaylistShelfContinuation.continuations
@@ -511,81 +511,114 @@ object YouTube {
                     ?.sectionListRenderer
                     ?.contents
                     ?.firstOrNull()
-            val base =
+
+            // Resolve whichever header renderer YouTube returned for this playlist.
+            // Large/library playlists may use MusicDetailHeaderRenderer instead of
+            // MusicResponsiveHeaderRenderer, which has a completely different structure.
+            val responsiveHeader: BrowseResponse.Header.MusicHeaderRenderer? =
                 tabsStart?.musicResponsiveHeaderRenderer
                     ?: tabsStart?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
+
+            val detailHeader: BrowseResponse.Header.MusicDetailHeaderRenderer? =
+                tabsStart?.musicDetailHeaderRenderer
+                    ?: tabsStart?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicDetailHeaderRenderer
+
+            val title: String =
+                responsiveHeader?.title?.runs?.firstOrNull()?.text
+                    ?: detailHeader?.title?.runs?.firstOrNull()?.text
+                    ?: throw Exception("Missing playlist title in response")
+
+            val thumbnail: String =
+                responsiveHeader?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url
+                    ?: detailHeader?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    ?: throw Exception("Missing playlist thumbnail in response")
+
+            val author: Artist? =
+                responsiveHeader?.straplineTextOne?.runs?.firstOrNull()?.let {
+                    Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
+                } ?: detailHeader?.subtitle?.runs?.firstOrNull()?.let {
+                    Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
+                }
+
+            val songCountText: String? =
+                responsiveHeader?.secondSubtitle?.runs?.firstOrNull()?.text
+                    ?: detailHeader?.secondSubtitle?.runs?.firstOrNull()?.text
+
+            // Shuffle endpoint: from buttons list (responsive) or menu items (detail)
+            val shuffleEndpoint: WatchEndpoint =
+                responsiveHeader?.buttons
+                    ?.lastOrNull()
+                    ?.menuRenderer
+                    ?.items
+                    ?.firstOrNull()
+                    ?.menuNavigationItemRenderer
+                    ?.navigationEndpoint
+                    ?.watchPlaylistEndpoint
+                    ?: responsiveHeader?.buttons
+                        ?.flatMap { it.menuRenderer?.items.orEmpty() }
+                        ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MUSIC_SHUFFLE" }
+                        ?.menuNavigationItemRenderer
+                        ?.navigationEndpoint
+                        ?.watchPlaylistEndpoint
+                    ?: detailHeader?.menu?.menuRenderer?.items
+                        ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MUSIC_SHUFFLE" }
+                        ?.menuNavigationItemRenderer
+                        ?.navigationEndpoint
+                        ?.watchPlaylistEndpoint
+                    ?: throw Exception("Missing shuffle endpoint in playlist response")
+
+            // Radio endpoint is optional — some playlists don't have one
+            val radioEndpoint: WatchEndpoint? =
+                responsiveHeader?.buttons
+                    ?.flatMap { it.menuRenderer?.items.orEmpty() }
+                    ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MIX" }
+                    ?.menuNavigationItemRenderer
+                    ?.navigationEndpoint
+                    ?.watchPlaylistEndpoint
+                    ?: detailHeader?.menu?.menuRenderer?.items
+                        ?.find { it.menuNavigationItemRenderer?.icon?.iconType == "MIX" }
+                        ?.menuNavigationItemRenderer
+                        ?.navigationEndpoint
+                        ?.watchPlaylistEndpoint
+
+            val secondaryContents =
+                response.contents
+                    ?.twoColumnBrowseResultsRenderer
+                    ?.secondaryContents
+                    ?.sectionListRenderer
+
             PlaylistPage(
                 playlist =
                     PlaylistItem(
                         id = playlistId,
-                        title =
-                            base
-                                ?.title
-                                ?.runs
-                                ?.firstOrNull()
-                                ?.text!!,
-                        author =
-                            base.straplineTextOne?.runs?.firstOrNull()?.let {
-                                Artist(
-                                    name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId,
-                                )
-                            },
-                        songCountText =
-                            base.secondSubtitle
-                                ?.runs
-                                ?.firstOrNull()
-                                ?.text,
-                        thumbnail =
-                            base.thumbnail
-                                ?.musicThumbnailRenderer
-                                ?.thumbnail
-                                ?.thumbnails
-                                ?.lastOrNull()
-                                ?.url!!,
+                        title = title,
+                        author = author,
+                        songCountText = songCountText,
+                        thumbnail = thumbnail,
                         playEndpoint = null,
-                        shuffleEndpoint =
-                            base.buttons
-                                ?.lastOrNull()
-                                ?.menuRenderer
-                                ?.items
-                                ?.firstOrNull()
-                                ?.menuNavigationItemRenderer
-                                ?.navigationEndpoint
-                                ?.watchPlaylistEndpoint!!,
-                        radioEndpoint =
-                            base.buttons
-                                .lastOrNull()
-                                ?.menuRenderer
-                                ?.items!!
-                                .find {
-                                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
-                                }?.menuNavigationItemRenderer
-                                ?.navigationEndpoint
-                                ?.watchPlaylistEndpoint!!,
+                        shuffleEndpoint = shuffleEndpoint,
+                        radioEndpoint = radioEndpoint,
                     ),
                 songs =
-                    response.contents
-                        ?.twoColumnBrowseResultsRenderer
-                        ?.secondaryContents
-                        ?.sectionListRenderer
+                    secondaryContents
                         ?.contents
                         ?.firstOrNull()
                         ?.musicPlaylistShelfRenderer
                         ?.contents
                         ?.mapNotNull {
-                            PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
-                        }!!,
+                            PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
+                        }
+                        ?: emptyList(),
                 songsContinuation =
-                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents.sectionListRenderer
-                        .contents
-                        .firstOrNull()
+                    secondaryContents
+                        ?.contents
+                        ?.firstOrNull()
                         ?.musicPlaylistShelfRenderer
                         ?.continuations
                         ?.getContinuation(),
                 continuation =
-                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents.sectionListRenderer
-                        .continuations
+                    secondaryContents
+                        ?.continuations
                         ?.getContinuation(),
             )
         }
@@ -602,7 +635,7 @@ object YouTube {
             PlaylistContinuationPage(
                 songs =
                     response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
-                        PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer)
+                        PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
                     }!!,
                 continuation =
                     response.continuationContents.musicPlaylistShelfContinuation.continuations
