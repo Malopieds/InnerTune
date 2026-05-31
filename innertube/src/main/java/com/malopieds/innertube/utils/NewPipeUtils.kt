@@ -27,18 +27,41 @@ object NewPipeUtils {
     }
 
     fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String) = runCatching {
-        format.url?.let {
-            return@runCatching it
+        format.url?.let { directUrl ->
+            return@runCatching deobfuscateOrStrip(videoId, directUrl)
         }
         format.signatureCipher?.let { signatureCipher ->
             val params = parseQueryString(signatureCipher)
             val obfuscatedSignature = params["s"] ?: throw ParsingException("Could not parse cipher signature")
             val signatureParam = params["sp"] ?: throw ParsingException("Could not parse cipher signature parameter")
             val url = params["url"]?.let { URLBuilder(it) } ?: throw ParsingException("Could not parse cipher url")
-            url.parameters[signatureParam] = YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, obfuscatedSignature)
-            return@runCatching YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, url.toString())
+            try {
+                url.parameters[signatureParam] = YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, obfuscatedSignature)
+            } catch (_: Exception) {
+                // Signature deobfuscation failed for this player version.
+                // Remove the n parameter and return the unsigned URL — YouTube may still serve it.
+                url.parameters.remove("n")
+                return@runCatching url.toString()
+            }
+            return@runCatching deobfuscateOrStrip(videoId, url.toString())
         }
         throw ParsingException("Could not find format url")
+    }
+
+    /**
+     * Attempts to deobfuscate the throttling (n) parameter in [url].
+     * If NewPipe cannot handle the current player version, strips the n parameter instead —
+     * YouTube will serve the stream unthrottled when n is absent.
+     */
+    private fun deobfuscateOrStrip(videoId: String, url: String): String {
+        return try {
+            YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, url)
+        } catch (_: Exception) {
+            // Strip the n parameter so YouTube doesn't throttle based on an invalid value.
+            val builder = URLBuilder(url)
+            builder.parameters.remove("n")
+            builder.toString()
+        }
     }
 }
 

@@ -143,7 +143,7 @@ class InnerTube {
         videoId: String,
         playlistId: String?,
         signatureTimestamp: Int?
-    ) = httpClient.post("${client.playerUrl ?: YouTubeClient.API_URL_YOUTUBE_MUSIC}player") {
+    ) = httpClient.post("player") {
         ytClient(client, setLogin = true)
         setBody(
             PlayerBody(
@@ -190,7 +190,6 @@ class InnerTube {
                 context = client.toContext(locale, visitorData),
                 browseId = browseId,
                 params = params,
-                continuation = continuation,
             ),
         )
         parameter("continuation", continuation)

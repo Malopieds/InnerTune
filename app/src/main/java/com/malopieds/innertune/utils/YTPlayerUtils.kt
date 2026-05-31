@@ -4,7 +4,6 @@ import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertube.models.YouTubeClient
-import com.malopieds.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
 import com.malopieds.innertube.models.YouTubeClient.Companion.IOS
 import com.malopieds.innertube.models.YouTubeClient.Companion.MAIN_CLIENT
 import com.malopieds.innertube.models.YouTubeClient.Companion.TVHTML5
@@ -34,11 +33,9 @@ object YTPlayerUtils {
 
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
-     * ANDROID_MUSIC is first because it returns direct stream URLs (no signatureCipher),
-     * so no JS deobfuscation is needed. IOS is kept as a final fallback.
      */
     private val STREAM_FALLBACK_CLIENTS: List<YouTubeClient> = listOf(
-        ANDROID_MUSIC,
+        TVHTML5,
         IOS,
     )
 
@@ -85,21 +82,31 @@ object YTPlayerUtils {
                 when (clientIndex) {
                     -1 -> mainPlayerResponse
                     else -> {
-                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue
+                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue // skip if index is out of range
                         val client = STREAM_FALLBACK_CLIENTS[clientIndex]
-                        if (client.loginRequired && YouTube.cookie == null) continue
+                        if (client.loginRequired && YouTube.cookie == null) {
+                            // skip client if it requires login but user is not logged in
+                            continue
+                        }
                         YouTube.player(videoId, playlistId, client, signatureTimestamp).getOrNull()
                     }
                 }
 
-            if (streamPlayerResponse?.statusOk() != true) continue
-            format = findFormat(streamPlayerResponse, playedFormat, audioQuality, connectivityManager) ?: continue
+            if (streamPlayerResponse?.statusOk() != true) continue // skip client
+            format = findFormat(
+                streamPlayerResponse,
+                playedFormat,
+                audioQuality,
+                connectivityManager,
+            ) ?: continue
             streamUrl = findUrlOrNull(format, videoId) ?: continue
             streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
 
             when (clientIndex) {
-                STREAM_FALLBACK_CLIENTS.size - 1 -> continue
-                else -> if (validateStatus(streamUrl)) break
+                STREAM_FALLBACK_CLIENTS.size - 1 -> continue /** skip [validateStatus] for last client */
+                else -> {
+                    if (validateStatus(streamUrl)) break  // Found a working stream
+                }
             }
         }
 
