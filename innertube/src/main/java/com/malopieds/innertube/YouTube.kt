@@ -7,6 +7,7 @@ import com.malopieds.innertube.models.ArtistItem
 import com.malopieds.innertube.models.BrowseEndpoint
 import com.malopieds.innertube.models.GridRenderer
 import com.malopieds.innertube.models.MusicResponsiveListItemRenderer
+import com.malopieds.innertube.models.MusicShelfRenderer
 import com.malopieds.innertube.models.MusicTwoRowItemRenderer
 import com.malopieds.innertube.models.PlaylistItem
 import com.malopieds.innertube.models.SearchSuggestions
@@ -614,8 +615,14 @@ object YouTube {
                         ?.contents
                         ?.firstOrNull()
                         ?.musicPlaylistShelfRenderer
-                        ?.continuations
-                        ?.getContinuation(),
+                        ?.let { shelf ->
+                            shelf.continuations?.getContinuation()
+                                ?: shelf.contents.lastOrNull()
+                                    ?.continuationItemRenderer
+                                    ?.continuationEndpoint
+                                    ?.continuationCommand
+                                    ?.token
+                        },
                 continuation =
                     secondaryContents
                         ?.continuations
@@ -632,14 +639,35 @@ object YouTube {
                         continuation = continuation,
                         setLogin = true,
                     ).body<BrowseResponse>()
+            // Continuation responses may come back as continuationContents or
+            // onResponseReceivedActions depending on the playlist type.
+            val items: List<MusicShelfRenderer.Content> =
+                response.continuationContents?.musicPlaylistShelfContinuation?.contents
+                    ?: response.onResponseReceivedActions
+                        ?.firstOrNull()
+                        ?.appendContinuationItemsAction
+                        ?.continuationItems
+                    ?: emptyList()
+
+            val nextContinuation: String? =
+                response.continuationContents?.musicPlaylistShelfContinuation?.let { shelf ->
+                    shelf.continuations?.getContinuation()
+                        ?: shelf.contents.lastOrNull()
+                            ?.continuationItemRenderer
+                            ?.continuationEndpoint
+                            ?.continuationCommand
+                            ?.token
+                } ?: items.lastOrNull()
+                    ?.continuationItemRenderer
+                    ?.continuationEndpoint
+                    ?.continuationCommand
+                    ?.token
+
             PlaylistContinuationPage(
-                songs =
-                    response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
-                        PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
-                    }!!,
-                continuation =
-                    response.continuationContents.musicPlaylistShelfContinuation.continuations
-                        ?.getContinuation(),
+                songs = items.mapNotNull {
+                    PlaylistPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
+                },
+                continuation = nextContinuation,
             )
         }
 
