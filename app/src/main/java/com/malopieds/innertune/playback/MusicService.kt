@@ -771,7 +771,7 @@ class MusicService :
                         }
 
                         else -> throw PlaybackException(
-                            getString(R.string.error_unknown),
+                            throwable.message ?: getString(R.string.error_unknown),
                             throwable,
                             PlaybackException.ERROR_CODE_REMOTE_ERROR,
                         )
