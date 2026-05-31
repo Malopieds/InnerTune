@@ -143,7 +143,7 @@ class InnerTube {
         videoId: String,
         playlistId: String?,
         signatureTimestamp: Int?
-    ) = httpClient.post("player") {
+    ) = httpClient.post("${client.playerUrl ?: YouTubeClient.API_URL_YOUTUBE_MUSIC}player") {
         ytClient(client, setLogin = true)
         setBody(
             PlayerBody(

@@ -14,6 +14,7 @@ data class YouTubeClient(
     val loginSupported: Boolean = false,
     val useSignatureTimestamp: Boolean = false,
     val isEmbedded: Boolean = false,
+    val playerUrl: String? = null, // override base URL for player requests; null = use default music.youtube.com
 ) {
     fun toContext(
         locale: YouTubeLocale,
@@ -34,6 +35,7 @@ data class YouTubeClient(
         const val ORIGIN_YOUTUBE_MUSIC = "https://music.youtube.com"
         const val REFERER_YOUTUBE_MUSIC = "$ORIGIN_YOUTUBE_MUSIC/"
         const val API_URL_YOUTUBE_MUSIC = "$ORIGIN_YOUTUBE_MUSIC/youtubei/v1/"
+        const val API_URL_YOUTUBE = "https://www.youtube.com/youtubei/v1/"
 
         const val USER_AGENT_WEB =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"
@@ -50,6 +52,7 @@ data class YouTubeClient(
                 clientId = "21",
                 api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
                 userAgent = USER_AGENT_ANDROID,
+                playerUrl = API_URL_YOUTUBE,
             )
 
         val ANDROID =
@@ -68,6 +71,7 @@ data class YouTubeClient(
                 osVersion = "18.1.0.22B83",
                 api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc",
                 userAgent = USER_AGENT_IOS,
+                playerUrl = API_URL_YOUTUBE,
             )
         val WEB =
             YouTubeClient(
@@ -100,6 +104,7 @@ data class YouTubeClient(
                 loginRequired = true,
                 useSignatureTimestamp = true,
                 isEmbedded = true,
+                playerUrl = API_URL_YOUTUBE,
             )
         val MAIN_CLIENT = WEB_REMIX
     }
