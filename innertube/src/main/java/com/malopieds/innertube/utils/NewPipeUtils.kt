@@ -64,10 +64,17 @@ object NewPipeUtils {
      */
     private fun fallbackDeobfuscateSignature(obfuscatedSig: String): String? {
         return try {
-            val js = fetchPlayerJs() ?: return null
-            val ops = extractSigOps(js) ?: return null
-            applySigOps(obfuscatedSig, ops)
-        } catch (_: Exception) {
+            val js = fetchPlayerJs()
+            println("[SigFallback] fetchPlayerJs: ${if (js != null) "ok (${js.length} bytes)" else "null"}")
+            js ?: return null
+            val ops = extractSigOps(js)
+            println("[SigFallback] extractSigOps: ${ops?.joinToString { "${it.first}(${it.second})" } ?: "null"}")
+            ops ?: return null
+            val result = applySigOps(obfuscatedSig, ops)
+            println("[SigFallback] applySigOps: input_len=${obfuscatedSig.length} output_len=${result.length}")
+            result
+        } catch (e: Exception) {
+            println("[SigFallback] exception: ${e.javaClass.simpleName}: ${e.message}")
             null
         }
     }
