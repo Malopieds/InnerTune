@@ -85,3 +85,7 @@
 -dontwarn java.beans.IntrospectionException
 -dontwarn java.beans.Introspector
 -dontwarn java.beans.PropertyDescriptor
+
+# Rhino (used by NewPipeExtractor for JS execution) references javax.script which is not on Android
+-dontwarn javax.script.**
+-dontwarn org.mozilla.javascript.engine.**
