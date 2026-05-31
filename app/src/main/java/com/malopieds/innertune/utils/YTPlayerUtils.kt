@@ -77,51 +77,43 @@ object YTPlayerUtils {
         var streamExpiresInSeconds: Int? = null
         var streamPlayerResponse: PlayerResponse? = null
 
-        android.util.Log.d("YTPlayer", "hasCookie=${YouTube.cookie != null} sigTs=$signatureTimestamp")
+        val diagnostics = StringBuilder("cookie=${YouTube.cookie != null} sigTs=$signatureTimestamp")
         for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
             streamPlayerResponse =
                 when (clientIndex) {
                     -1 -> mainPlayerResponse
                     else -> {
-                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue // skip if index is out of range
+                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue
                         val client = STREAM_FALLBACK_CLIENTS[clientIndex]
                         if (client.loginRequired && YouTube.cookie == null) {
-                            android.util.Log.d("YTPlayer", "[${client.clientName}] skip: no cookie")
+                            diagnostics.append(" | ${client.clientName}=skipped(no-cookie)")
                             continue
                         }
                         YouTube.player(videoId, playlistId, client, signatureTimestamp)
-                            .onFailure { android.util.Log.e("YTPlayer", "[${client.clientName}] player threw: ${it.javaClass.simpleName}: ${it.message?.take(200)}") }
+                            .onFailure { diagnostics.append(" | ${client.clientName}=threw(${it.javaClass.simpleName}:${it.message?.take(80)})") }
                             .getOrNull()
                     }
                 }
 
             val clientName = if (clientIndex == -1) "WEB_REMIX" else STREAM_FALLBACK_CLIENTS[clientIndex].clientName
-            android.util.Log.d("YTPlayer", "[$clientName] status=${streamPlayerResponse?.playabilityStatus?.status}")
-            if (streamPlayerResponse?.statusOk() != true) continue // skip client
-            format = findFormat(
-                streamPlayerResponse,
-                playedFormat,
-                audioQuality,
-                connectivityManager,
-            )
-            android.util.Log.d("YTPlayer", "[$clientName] format=${format?.itag} hasCipher=${format?.signatureCipher != null}")
+            val status = streamPlayerResponse?.playabilityStatus?.status ?: "null"
+            diagnostics.append(" | $clientName=$status")
+            if (streamPlayerResponse?.statusOk() != true) continue
+            format = findFormat(streamPlayerResponse, playedFormat, audioQuality, connectivityManager)
+            diagnostics.append(" fmt=${format?.itag}")
             format ?: continue
             streamUrl = findUrlOrNull(format, videoId)
-            android.util.Log.d("YTPlayer", "[$clientName] streamUrl=${if (streamUrl != null) "ok" else "null"}")
+            diagnostics.append(" url=${if (streamUrl != null) "ok" else "null"}")
             streamUrl ?: continue
             streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
 
             when (clientIndex) {
-                STREAM_FALLBACK_CLIENTS.size - 1 -> continue /** skip [validateStatus] for last client */
-                else -> {
-                    val valid = validateStatus(streamUrl)
-                    android.util.Log.d("YTPlayer", "[$clientName] validateStatus=$valid")
-                    if (valid) break
-                }
+                STREAM_FALLBACK_CLIENTS.size - 1 -> continue
+                else -> if (validateStatus(streamUrl)) break
             }
         }
 
-        if (streamPlayerResponse == null) throw Exception("Bad stream player response")
+        if (streamPlayerResponse == null) throw Exception("Bad stream player response: $diagnostics")
         if (!streamPlayerResponse.statusOk()) {
             throw PlaybackException(
                 streamPlayerResponse.playabilityStatus.reason,
