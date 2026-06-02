@@ -8,6 +8,7 @@ import com.malopieds.innertube.models.AlbumItem
 import com.malopieds.innertune.db.MusicDatabase
 import com.malopieds.innertune.utils.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -29,9 +30,10 @@ class AlbumViewModel
                 .albumWithSongs(albumId)
                 .stateIn(viewModelScope, SharingStarted.Eagerly, null)
         var otherVersions = MutableStateFlow<List<AlbumItem>>(emptyList())
+        val isLoading = MutableStateFlow(true)
 
         init {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 val album = database.album(albumId).first()
                 YouTube
                     .album(albumId)
@@ -53,6 +55,7 @@ class AlbumViewModel
                             }
                         }
                     }
+                isLoading.value = false
             }
         }
     }

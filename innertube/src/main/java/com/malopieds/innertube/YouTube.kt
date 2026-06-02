@@ -227,6 +227,7 @@ object YouTube {
     ): Result<AlbumPage> =
         runCatching {
             val response = innerTube.browse(WEB_REMIX, browseId).body<BrowseResponse>()
+
             val playlistId =
                 response.microformat
                     ?.microformatDataRenderer
@@ -239,86 +240,70 @@ object YouTube {
                         ?.contents
                         ?.firstOrNull()
                         ?.musicPlaylistShelfRenderer
-                        ?.playlistId!!
+                        ?.playlistId
+                    ?: throw Exception("Could not determine album playlistId")
+
+            // Albums may use musicResponsiveHeaderRenderer (inside twoColumnBrowseResultsRenderer
+            // tabs) or musicImmersiveHeaderRenderer / musicDetailHeaderRenderer in response.header.
+            val tabsContent =
+                response.contents
+                    ?.twoColumnBrowseResultsRenderer
+                    ?.tabs
+                    ?.firstOrNull()
+                    ?.tabRenderer
+                    ?.content
+                    ?.sectionListRenderer
+                    ?.contents
+                    ?.firstOrNull()
+
+            val responsiveHeader = tabsContent?.musicResponsiveHeaderRenderer
+            val immersiveHeader = response.header?.musicImmersiveHeaderRenderer
+            val detailHeader = response.header?.musicDetailHeaderRenderer
+
+            val title =
+                responsiveHeader?.title?.runs?.firstOrNull()?.text
+                    ?: immersiveHeader?.title?.runs?.firstOrNull()?.text
+                    ?: detailHeader?.title?.runs?.firstOrNull()?.text
+                    ?: throw Exception("Missing album title in response")
+
+            val artists =
+                responsiveHeader?.straplineTextOne?.runs?.oddElements()?.map {
+                    Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
+                }
+                    ?: detailHeader?.subtitle?.runs?.oddElements()?.map {
+                        Artist(name = it.text, id = it.navigationEndpoint?.browseEndpoint?.browseId)
+                    }
+                    ?: emptyList()
+
+            val year =
+                responsiveHeader?.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull()
+                    ?: detailHeader?.subtitle?.runs?.lastOrNull()?.text?.toIntOrNull()
+
+            val thumbnail =
+                responsiveHeader?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()?.url
+                    ?: immersiveHeader?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    ?: detailHeader?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
+                    ?: throw Exception("Missing album thumbnail in response")
+
             AlbumPage(
                 album =
                     AlbumItem(
                         browseId = browseId,
                         playlistId = playlistId,
-                        title =
-                            response.contents
-                                ?.twoColumnBrowseResultsRenderer
-                                ?.tabs
-                                ?.firstOrNull()
-                                ?.tabRenderer
-                                ?.content
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.firstOrNull()
-                                ?.musicResponsiveHeaderRenderer
-                                ?.title
-                                ?.runs
-                                ?.firstOrNull()
-                                ?.text!!,
-                        artists =
-                            response.contents.twoColumnBrowseResultsRenderer.tabs
-                                .firstOrNull()
-                                ?.tabRenderer
-                                ?.content
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.firstOrNull()
-                                ?.musicResponsiveHeaderRenderer
-                                ?.straplineTextOne
-                                ?.runs
-                                ?.oddElements()
-                                ?.map {
-                                    Artist(
-                                        name = it.text,
-                                        id =
-                                            it.navigationEndpoint
-                                                ?.browseEndpoint
-                                                ?.browseId,
-                                    )
-                                }!!,
-                        year =
-                            response.contents.twoColumnBrowseResultsRenderer.tabs
-                                .firstOrNull()
-                                ?.tabRenderer
-                                ?.content
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.firstOrNull()
-                                ?.musicResponsiveHeaderRenderer
-                                ?.subtitle
-                                ?.runs
-                                ?.lastOrNull()
-                                ?.text
-                                ?.toIntOrNull(),
-                        thumbnail =
-                            response.contents.twoColumnBrowseResultsRenderer.tabs
-                                .firstOrNull()
-                                ?.tabRenderer
-                                ?.content
-                                ?.sectionListRenderer
-                                ?.contents
-                                ?.firstOrNull()
-                                ?.musicResponsiveHeaderRenderer
-                                ?.thumbnail
-                                ?.musicThumbnailRenderer
-                                ?.thumbnail
-                                ?.thumbnails
-                                ?.lastOrNull()
-                                ?.url!!,
+                        title = title,
+                        artists = artists,
+                        year = year,
+                        thumbnail = thumbnail,
                     ),
                 songs = if (withSongs) albumSongs(playlistId).getOrThrow() else emptyList(),
                 otherVersions =
-                    response.contents.twoColumnBrowseResultsRenderer.secondaryContents
+                    response.contents
+                        ?.twoColumnBrowseResultsRenderer
+                        ?.secondaryContents
                         ?.sectionListRenderer
                         ?.contents
-                        ?.getOrNull(
-                            1,
-                        )?.musicCarouselShelfRenderer
+                        ?.getOrNull(1)
+                        ?.musicCarouselShelfRenderer
                         ?.contents
                         ?.mapNotNull { it.musicTwoRowItemRenderer }
                         ?.mapNotNull(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
@@ -339,7 +324,8 @@ object YouTube {
                 ?.contents
                 ?.mapNotNull {
                     AlbumPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
-                }!!
+                }
+                ?: emptyList()
         }
 
     suspend fun artist(browseId: String): Result<ArtistPage> =
