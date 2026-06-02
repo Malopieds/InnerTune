@@ -173,11 +173,26 @@ object YouTube {
             }
 
             val summaries: List<SearchSummary> = when {
-                // New format: flat items (+ optional top result card)
-                flatItems.isNotEmpty() -> listOfNotNull(topResult) +
-                    listOf(SearchSummary(title = query, items = flatItems))
                 // Legacy format: grouped shelves (+ optional top result card)
                 shelfSummaries.isNotEmpty() -> listOfNotNull(topResult) + shelfSummaries
+                // New flat format: group by item type so the UI shows meaningful section headers
+                flatItems.isNotEmpty() -> {
+                    val grouped = flatItems.groupBy { item ->
+                        when (item) {
+                            is ArtistItem -> "Artists"
+                            is AlbumItem -> "Albums"
+                            is PlaylistItem -> "Playlists"
+                            else -> "Songs"
+                        }
+                    }
+                    // Preserve a predictable order: top result, then Songs, Artists, Albums, Playlists
+                    val order = listOf("Songs", "Artists", "Albums", "Playlists")
+                    listOfNotNull(topResult) + order.mapNotNull { title ->
+                        grouped[title]?.let { SearchSummary(title = title, items = it) }
+                    } + grouped.filterKeys { it !in order }.map { (title, items) ->
+                        SearchSummary(title = title, items = items)
+                    }
+                }
                 // Only a top result card, nothing else
                 topResult != null -> listOf(topResult)
                 else -> emptyList()
@@ -192,35 +207,36 @@ object YouTube {
     ): Result<SearchResult> =
         runCatching {
             val response = innerTube.search(WEB_REMIX, query, filter.value).body<SearchResponse>()
+            val sectionContents = response.contents
+                ?.tabbedSearchResultsRenderer
+                ?.tabs
+                ?.firstOrNull()
+                ?.tabRenderer
+                ?.content
+                ?.sectionListRenderer
+                ?.contents
+                .orEmpty()
+
+            // Legacy: results in a musicShelfRenderer (last section)
+            val shelf = sectionContents.lastOrNull()?.musicShelfRenderer
+
+            // New: results individually wrapped in itemSectionRenderers
+            val flatRenderers = sectionContents
+                .flatMap { section -> section.itemSectionRenderer?.contents.orEmpty() }
+                .mapNotNull { it.musicResponsiveListItemRenderer }
+
             SearchResult(
-                items =
-                    response.contents
-                        ?.tabbedSearchResultsRenderer
-                        ?.tabs
-                        ?.firstOrNull()
-                        ?.tabRenderer
-                        ?.content
-                        ?.sectionListRenderer
-                        ?.contents
-                        ?.lastOrNull()
-                        ?.musicShelfRenderer
-                        ?.contents
-                        ?.mapNotNull {
-                            SearchPage.toYTItem(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
-                        }.orEmpty(),
-                continuation =
-                    response.contents
-                        ?.tabbedSearchResultsRenderer
-                        ?.tabs
-                        ?.firstOrNull()
-                        ?.tabRenderer
-                        ?.content
-                        ?.sectionListRenderer
-                        ?.contents
-                        ?.lastOrNull()
-                        ?.musicShelfRenderer
-                        ?.continuations
-                        ?.getContinuation(),
+                items = when {
+                    shelf != null ->
+                        shelf.contents
+                            ?.mapNotNull {
+                                SearchPage.toYTItem(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
+                            }.orEmpty()
+                    flatRenderers.isNotEmpty() ->
+                        flatRenderers.mapNotNull { SearchPage.toYTItem(it) }
+                    else -> emptyList()
+                },
+                continuation = shelf?.continuations?.getContinuation(),
             )
         }
 
