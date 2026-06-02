@@ -43,6 +43,15 @@ data class YouTubeClient(
         private const val USER_AGENT_TVHTML5 =
             "Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15"
 
+        val ANDROID_VR =
+            YouTubeClient(
+                clientName = "ANDROID_VR",
+                clientVersion = "1.43.32",
+                clientId = "28",
+                api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
+                userAgent = "com.google.android.apps.youtube.vr.oculus/1.43.32 (Linux; U; Android 12; en_US; Quest 3; Build/SQ3A.220605.009.A1; Cronet/107.0.5284.2)",
+            )
+
         val ANDROID_MUSIC =
             YouTubeClient(
                 clientName = "ANDROID_MUSIC",

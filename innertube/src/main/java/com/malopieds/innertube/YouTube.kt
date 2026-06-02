@@ -502,6 +502,8 @@ object YouTube {
                         browseId = "VL$playlistId",
                         setLogin = true,
                     ).body<BrowseResponse>()
+
+
             val tabsStart =
                 response.contents
                     ?.twoColumnBrowseResultsRenderer
@@ -513,6 +515,7 @@ object YouTube {
                     ?.contents
                     ?.firstOrNull()
 
+
             // Resolve whichever header renderer YouTube returned for this playlist.
             // Large/library playlists may use MusicDetailHeaderRenderer instead of
             // MusicResponsiveHeaderRenderer, which has a completely different structure.
@@ -523,6 +526,7 @@ object YouTube {
             val detailHeader: BrowseResponse.Header.MusicDetailHeaderRenderer? =
                 tabsStart?.musicDetailHeaderRenderer
                     ?: tabsStart?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicDetailHeaderRenderer
+
 
             val title: String =
                 responsiveHeader?.title?.runs?.firstOrNull()?.text
@@ -546,7 +550,7 @@ object YouTube {
                     ?: detailHeader?.secondSubtitle?.runs?.firstOrNull()?.text
 
             // Shuffle endpoint: from buttons list (responsive) or menu items (detail)
-            val shuffleEndpoint: WatchEndpoint =
+            val shuffleEndpoint: WatchEndpoint? =
                 responsiveHeader?.buttons
                     ?.lastOrNull()
                     ?.menuRenderer
@@ -566,7 +570,6 @@ object YouTube {
                         ?.menuNavigationItemRenderer
                         ?.navigationEndpoint
                         ?.watchPlaylistEndpoint
-                    ?: throw Exception("Missing shuffle endpoint in playlist response")
 
             // Radio endpoint is optional — some playlists don't have one
             val radioEndpoint: WatchEndpoint? =
@@ -581,6 +584,7 @@ object YouTube {
                         ?.menuNavigationItemRenderer
                         ?.navigationEndpoint
                         ?.watchPlaylistEndpoint
+
 
             val secondaryContents =
                 response.contents

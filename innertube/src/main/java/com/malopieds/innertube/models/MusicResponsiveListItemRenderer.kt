@@ -73,7 +73,7 @@ data class MusicResponsiveListItemRenderer(
     @Serializable
     data class PlaylistItemData(
         val playlistSetVideoId: String?,
-        val videoId: String,
+        val videoId: String?,
     )
 
     @Serializable

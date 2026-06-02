@@ -84,8 +84,12 @@ class InnerTube {
                 deflate(0.8F)
             }
 
-            if (proxy != null) {
-                engine {
+            engine {
+                config {
+                    connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+                    readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                }
+                if (proxy != null) {
                     proxy = this@InnerTube.proxy
                 }
             }
@@ -190,6 +194,7 @@ class InnerTube {
                 context = client.toContext(locale, visitorData),
                 browseId = browseId,
                 params = params,
+                continuation = continuation,
             ),
         )
         parameter("continuation", continuation)

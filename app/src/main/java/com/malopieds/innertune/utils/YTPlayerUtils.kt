@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertube.models.YouTubeClient
+import com.malopieds.innertube.models.YouTubeClient.Companion.ANDROID_VR
 import com.malopieds.innertube.models.YouTubeClient.Companion.IOS
 import com.malopieds.innertube.models.YouTubeClient.Companion.MAIN_CLIENT
 import com.malopieds.innertube.models.YouTubeClient.Companion.TVHTML5
@@ -33,8 +34,11 @@ object YTPlayerUtils {
 
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
+     * ANDROID_VR is first because it returns direct stream URLs with no signatureCipher,
+     * bypassing NewPipe deobfuscation entirely.
      */
     private val STREAM_FALLBACK_CLIENTS: List<YouTubeClient> = listOf(
+        ANDROID_VR,
         TVHTML5,
         IOS,
     )
@@ -77,43 +81,40 @@ object YTPlayerUtils {
         var streamExpiresInSeconds: Int? = null
         var streamPlayerResponse: PlayerResponse? = null
 
-        val diagnostics = StringBuilder("cookie=${YouTube.cookie != null} sigTs=$signatureTimestamp")
         for (clientIndex in (-1 until STREAM_FALLBACK_CLIENTS.size)) {
             streamPlayerResponse =
                 when (clientIndex) {
                     -1 -> mainPlayerResponse
                     else -> {
-                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue
+                        if (clientIndex !in STREAM_FALLBACK_CLIENTS.indices) continue // skip if index is out of range
                         val client = STREAM_FALLBACK_CLIENTS[clientIndex]
                         if (client.loginRequired && YouTube.cookie == null) {
-                            diagnostics.append(" | ${client.clientName}=skipped(no-cookie)")
+                            // skip client if it requires login but user is not logged in
                             continue
                         }
-                        YouTube.player(videoId, playlistId, client, signatureTimestamp)
-                            .onFailure { diagnostics.append(" | ${client.clientName}=threw(${it.javaClass.simpleName}:${it.message?.take(80)})") }
-                            .getOrNull()
+                        YouTube.player(videoId, playlistId, client, signatureTimestamp).getOrNull()
                     }
                 }
 
-            val clientName = if (clientIndex == -1) "WEB_REMIX" else STREAM_FALLBACK_CLIENTS[clientIndex].clientName
-            val status = streamPlayerResponse?.playabilityStatus?.status ?: "null"
-            diagnostics.append(" | $clientName=$status")
-            if (streamPlayerResponse?.statusOk() != true) continue
-            format = findFormat(streamPlayerResponse, playedFormat, audioQuality, connectivityManager)
-            diagnostics.append(" fmt=${format?.itag}")
-            format ?: continue
-            streamUrl = findUrlOrNull(format, videoId)
-            diagnostics.append(" url=${if (streamUrl != null) "ok" else "null"}")
-            streamUrl ?: continue
+            if (streamPlayerResponse?.statusOk() != true) continue // skip client
+            format = findFormat(
+                streamPlayerResponse,
+                playedFormat,
+                audioQuality,
+                connectivityManager,
+            ) ?: continue
+            streamUrl = findUrlOrNull(format, videoId) ?: continue
             streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds ?: continue
 
             when (clientIndex) {
-                STREAM_FALLBACK_CLIENTS.size - 1 -> continue
-                else -> if (validateStatus(streamUrl)) break
+                STREAM_FALLBACK_CLIENTS.size - 1 -> continue /** skip [validateStatus] for last client */
+                else -> {
+                    if (validateStatus(streamUrl)) break  // Found a working stream
+                }
             }
         }
 
-        if (streamPlayerResponse == null) throw Exception("Bad stream player response: $diagnostics")
+        if (streamPlayerResponse == null) throw Exception("Bad stream player response")
         if (!streamPlayerResponse.statusOk()) {
             throw PlaybackException(
                 streamPlayerResponse.playabilityStatus.reason,
