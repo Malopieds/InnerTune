@@ -65,7 +65,7 @@ data class SearchSummaryPage(
                             subtitle.getOrNull(2)?.firstOrNull()?.takeIf { it.navigationEndpoint?.browseEndpoint != null }?.let {
                                 Album(
                                     name = it.text,
-                                    id = it.navigationEndpoint?.browseEndpoint?.browseId!!,
+                                    id = it.navigationEndpoint?.browseEndpoint?.browseId ?: return@let null,
                                 )
                             },
                         duration =
@@ -141,8 +141,10 @@ data class SearchSummaryPage(
                             renderer.onTap.browseEndpoint.browseId
                                 .removePrefix("VL"),
                         title =
-                            renderer.header.musicCardShelfHeaderBasicRenderer.title.runs
+                            renderer.header?.musicCardShelfHeaderBasicRenderer?.title?.runs
                                 ?.joinToString(separator = "") { it.text }
+                                ?: renderer.title.runs
+                                    ?.joinToString(separator = "") { it.text }
                                 ?: return null,
                         author =
                             Artist(

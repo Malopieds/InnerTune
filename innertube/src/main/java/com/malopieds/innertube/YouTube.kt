@@ -131,10 +131,13 @@ object YouTube {
                         ?.mapNotNull { it ->
                             if (it.musicCardShelfRenderer != null) {
                                 SearchSummary(
-                                    title =
-                                        it.musicCardShelfRenderer.header.musicCardShelfHeaderBasicRenderer.title.runs
+                                     title =
+                                         it.musicCardShelfRenderer.header?.musicCardShelfHeaderBasicRenderer?.title?.runs
                                             ?.firstOrNull()
                                             ?.text
+                                            ?: it.musicCardShelfRenderer.title.runs
+                                                ?.firstOrNull()
+                                                ?.text
                                             ?: return@mapNotNull null,
                                     items =
                                         listOfNotNull(SearchSummaryPage.fromMusicCardShelfRenderer(it.musicCardShelfRenderer))
@@ -162,7 +165,8 @@ object YouTube {
                                             ?.ifEmpty { null } ?: return@mapNotNull null,
                                 )
                             }
-                        }!!,
+                        }
+                        .orEmpty(),
             )
         }
 
@@ -207,17 +211,16 @@ object YouTube {
     suspend fun searchContinuation(continuation: String): Result<SearchResult> =
         runCatching {
             val response = innerTube.search(WEB_REMIX, continuation = continuation).body<SearchResponse>()
+            val shelf = response.continuationContents?.musicShelfContinuation
             SearchResult(
                 items =
-                    response.continuationContents
-                        ?.musicShelfContinuation
+                    shelf
                         ?.contents
                         ?.mapNotNull {
                             SearchPage.toYTItem(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
-                        }!!,
-                continuation =
-                    response.continuationContents.musicShelfContinuation.continuations
-                        ?.getContinuation(),
+                        }
+                        .orEmpty(),
+                continuation = shelf?.continuations?.getContinuation(),
             )
         }
 
