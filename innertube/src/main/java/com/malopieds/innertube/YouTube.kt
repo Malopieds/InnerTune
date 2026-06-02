@@ -10,6 +10,7 @@ import com.malopieds.innertube.models.MusicResponsiveListItemRenderer
 import com.malopieds.innertube.models.MusicShelfRenderer
 import com.malopieds.innertube.models.MusicTwoRowItemRenderer
 import com.malopieds.innertube.models.PlaylistItem
+import com.malopieds.innertube.models.YTItem
 import com.malopieds.innertube.models.SearchSuggestions
 import com.malopieds.innertube.models.SongItem
 import com.malopieds.innertube.models.WatchEndpoint
@@ -118,56 +119,71 @@ object YouTube {
     suspend fun searchSummary(query: String): Result<SearchSummaryPage> =
         runCatching {
             val response = innerTube.search(WEB_REMIX, query).body<SearchResponse>()
-            SearchSummaryPage(
-                summaries =
-                    response.contents
-                        ?.tabbedSearchResultsRenderer
-                        ?.tabs
-                        ?.firstOrNull()
-                        ?.tabRenderer
-                        ?.content
-                        ?.sectionListRenderer
-                        ?.contents
-                        ?.mapNotNull { it ->
-                            if (it.musicCardShelfRenderer != null) {
-                                SearchSummary(
-                                     title =
-                                         it.musicCardShelfRenderer.header?.musicCardShelfHeaderBasicRenderer?.title?.runs
-                                            ?.firstOrNull()
-                                            ?.text
-                                            ?: it.musicCardShelfRenderer.title.runs
-                                                ?.firstOrNull()
-                                                ?.text
-                                            ?: return@mapNotNull null,
-                                    items =
-                                        listOfNotNull(SearchSummaryPage.fromMusicCardShelfRenderer(it.musicCardShelfRenderer))
-                                            .plus(
-                                                it.musicCardShelfRenderer.contents
-                                                    ?.mapNotNull { it.musicResponsiveListItemRenderer }
-                                                    ?.mapNotNull(SearchSummaryPage.Companion::fromMusicResponsiveListItemRenderer)
-                                                    .orEmpty(),
-                                            ).distinctBy { it.id }
-                                            .ifEmpty { null } ?: return@mapNotNull null,
-                                )
-                            } else {
-                                SearchSummary(
-                                    title =
-                                        it.musicShelfRenderer
-                                            ?.title
-                                            ?.runs
-                                            ?.firstOrNull()
-                                            ?.text ?: return@mapNotNull null,
-                                    items =
-                                        it.musicShelfRenderer.contents
-                                            ?.mapNotNull {
-                                                SearchSummaryPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer ?: return@mapNotNull null)
-                                            }?.distinctBy { it.id }
-                                            ?.ifEmpty { null } ?: return@mapNotNull null,
-                                )
-                            }
-                        }
-                        .orEmpty(),
-            )
+            val sectionContents = response.contents
+                ?.tabbedSearchResultsRenderer
+                ?.tabs
+                ?.firstOrNull()
+                ?.tabRenderer
+                ?.content
+                ?.sectionListRenderer
+                ?.contents
+                .orEmpty()
+
+            // New flat format: each result is individually wrapped in an itemSectionRenderer.
+            // Collect them all into one list.
+            val flatItems: List<YTItem> = sectionContents
+                .flatMap { section -> section.itemSectionRenderer?.contents.orEmpty() }
+                .mapNotNull { c ->
+                    val renderer = c.musicResponsiveListItemRenderer ?: return@mapNotNull null
+                    SearchSummaryPage.fromMusicResponsiveListItemRenderer(renderer)
+                }
+                .distinctBy { it.id }
+
+            // Legacy grouped format: musicCardShelfRenderer (top result) and
+            // musicShelfRenderer (per-category sections). Both may coexist with flatItems.
+            val topResult: SearchSummary? = sectionContents.firstNotNullOfOrNull { section ->
+                val card = section.musicCardShelfRenderer ?: return@firstNotNullOfOrNull null
+                val title = card.header?.musicCardShelfHeaderBasicRenderer?.title?.runs
+                    ?.firstOrNull()?.text
+                    ?: card.title.runs?.firstOrNull()?.text
+                    ?: return@firstNotNullOfOrNull null
+                val items = listOfNotNull(SearchSummaryPage.fromMusicCardShelfRenderer(card))
+                    .plus(
+                        card.contents
+                            ?.mapNotNull { c -> c.musicResponsiveListItemRenderer }
+                            ?.mapNotNull(SearchSummaryPage.Companion::fromMusicResponsiveListItemRenderer)
+                            .orEmpty(),
+                    ).distinctBy { it.id }
+                    .ifEmpty { return@firstNotNullOfOrNull null }
+                SearchSummary(title = title, items = items)
+            }
+
+            val shelfSummaries: List<SearchSummary> = sectionContents.mapNotNull { section ->
+                val shelf = section.musicShelfRenderer ?: return@mapNotNull null
+                SearchSummary(
+                    title = shelf.title?.runs?.firstOrNull()?.text ?: return@mapNotNull null,
+                    items = shelf.contents
+                        ?.mapNotNull { c ->
+                            SearchSummaryPage.fromMusicResponsiveListItemRenderer(
+                                c.musicResponsiveListItemRenderer ?: return@mapNotNull null,
+                            )
+                        }?.distinctBy { it.id }
+                        ?.ifEmpty { null } ?: return@mapNotNull null,
+                )
+            }
+
+            val summaries: List<SearchSummary> = when {
+                // New format: flat items (+ optional top result card)
+                flatItems.isNotEmpty() -> listOfNotNull(topResult) +
+                    listOf(SearchSummary(title = query, items = flatItems))
+                // Legacy format: grouped shelves (+ optional top result card)
+                shelfSummaries.isNotEmpty() -> listOfNotNull(topResult) + shelfSummaries
+                // Only a top result card, nothing else
+                topResult != null -> listOf(topResult)
+                else -> emptyList()
+            }
+
+            SearchSummaryPage(summaries = summaries)
         }
 
     suspend fun search(
