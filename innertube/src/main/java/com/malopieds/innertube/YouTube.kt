@@ -502,8 +502,6 @@ object YouTube {
                         browseId = "VL$playlistId",
                         setLogin = true,
                     ).body<BrowseResponse>()
-
-
             val tabsStart =
                 response.contents
                     ?.twoColumnBrowseResultsRenderer
@@ -515,7 +513,6 @@ object YouTube {
                     ?.contents
                     ?.firstOrNull()
 
-
             // Resolve whichever header renderer YouTube returned for this playlist.
             // Large/library playlists may use MusicDetailHeaderRenderer instead of
             // MusicResponsiveHeaderRenderer, which has a completely different structure.
@@ -526,7 +523,6 @@ object YouTube {
             val detailHeader: BrowseResponse.Header.MusicDetailHeaderRenderer? =
                 tabsStart?.musicDetailHeaderRenderer
                     ?: tabsStart?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicDetailHeaderRenderer
-
 
             val title: String =
                 responsiveHeader?.title?.runs?.firstOrNull()?.text
@@ -584,7 +580,6 @@ object YouTube {
                         ?.menuNavigationItemRenderer
                         ?.navigationEndpoint
                         ?.watchPlaylistEndpoint
-
 
             val secondaryContents =
                 response.contents
