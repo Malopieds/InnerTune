@@ -116,6 +116,7 @@ fun AlbumScreen(
     val playlistId by viewModel.playlistId.collectAsState()
     val albumWithSongs by viewModel.albumWithSongs.collectAsState()
     val otherVersions by viewModel.otherVersions.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val wrappedSongs = albumWithSongs?.songs?.map { item -> ItemWrapper(item) }?.toMutableList()
     var selection by remember {
@@ -151,7 +152,7 @@ fun AlbumScreen(
         contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
     ) {
         val albumWithSongs = albumWithSongs
-        if (albumWithSongs != null && albumWithSongs.songs.isNotEmpty()) {
+        if (albumWithSongs != null && (albumWithSongs.songs.isNotEmpty() || !isLoading)) {
             item {
                 Column(
                     modifier = Modifier.padding(12.dp),
