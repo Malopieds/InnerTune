@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import androidx.media3.common.PlaybackException
 import com.malopieds.innertube.YouTube
 import com.malopieds.innertube.models.YouTubeClient
+import com.malopieds.innertube.models.YouTubeClient.Companion.ANDROID_VR
 import com.malopieds.innertube.models.YouTubeClient.Companion.IOS
 import com.malopieds.innertube.models.YouTubeClient.Companion.MAIN_CLIENT
 import com.malopieds.innertube.models.YouTubeClient.Companion.TVHTML5
@@ -33,8 +34,11 @@ object YTPlayerUtils {
 
     /**
      * Clients used for fallback streams in case the streams of the main client do not work.
+     * ANDROID_VR is first because it returns direct stream URLs with no signatureCipher,
+     * bypassing NewPipe deobfuscation entirely.
      */
     private val STREAM_FALLBACK_CLIENTS: List<YouTubeClient> = listOf(
+        ANDROID_VR,
         TVHTML5,
         IOS,
     )

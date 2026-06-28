@@ -16,11 +16,22 @@ import kotlinx.serialization.Serializable
 data class BrowseResponse(
     val contents: Contents?,
     val continuationContents: ContinuationContents?,
+    val onResponseReceivedActions: List<OnResponseReceivedAction>?,
     val header: Header?,
     val microformat: Microformat?,
     val responseContext: ResponseContext,
     val background: MusicThumbnailRenderer?,
 ) {
+    @Serializable
+    data class OnResponseReceivedAction(
+        val appendContinuationItemsAction: AppendContinuationItemsAction?,
+    ) {
+        @Serializable
+        data class AppendContinuationItemsAction(
+            val continuationItems: List<MusicShelfRenderer.Content>?,
+        )
+    }
+
     @Serializable
     data class Contents(
         val singleColumnBrowseResultsRenderer: Tabs?,

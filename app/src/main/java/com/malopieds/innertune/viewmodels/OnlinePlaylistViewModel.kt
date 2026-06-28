@@ -31,6 +31,15 @@ class OnlinePlaylistViewModel
                     .onSuccess { playlistPage ->
                         playlist.value = playlistPage.playlist
                         playlistSongs.value = playlistPage.songs
+
+                        var songsContinuation = playlistPage.songsContinuation
+                        while (songsContinuation != null) {
+                            val continuationPage =
+                                YouTube.playlistContinuation(songsContinuation).getOrNull()
+                                    ?: break
+                            playlistSongs.value = playlistSongs.value + continuationPage.songs
+                            songsContinuation = continuationPage.continuation
+                        }
                     }.onFailure {
                         reportException(it)
                     }

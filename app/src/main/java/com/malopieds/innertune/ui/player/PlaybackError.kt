@@ -38,7 +38,10 @@ fun PlaybackError(
         )
 
         Text(
-            text = error.cause?.cause?.message ?: stringResource(R.string.error_unknown),
+            text = error.message
+                ?: error.cause?.message
+                ?: error.cause?.cause?.message
+                ?: stringResource(R.string.error_unknown),
             style = MaterialTheme.typography.bodyMedium,
         )
     }

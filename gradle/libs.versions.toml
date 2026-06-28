@@ -12,7 +12,7 @@ hilt = "2.51.1"
 ktor = "2.3.12"
 ksp = "2.0.0-1.0.24"
 squigglyslider = "1.0.0"
-newpipeExtractor = "0.24.4"
+newpipeExtractor = "v0.26.2"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }

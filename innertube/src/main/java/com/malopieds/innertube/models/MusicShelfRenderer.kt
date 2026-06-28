@@ -12,8 +12,24 @@ data class MusicShelfRenderer(
 ) {
     @Serializable
     data class Content(
-        val musicResponsiveListItemRenderer: MusicResponsiveListItemRenderer,
+        val musicResponsiveListItemRenderer: MusicResponsiveListItemRenderer?,
+        val continuationItemRenderer: ContinuationItemRenderer?,
     )
+
+    @Serializable
+    data class ContinuationItemRenderer(
+        val continuationEndpoint: ContinuationEndpoint?,
+    ) {
+        @Serializable
+        data class ContinuationEndpoint(
+            val continuationCommand: ContinuationCommand?,
+        ) {
+            @Serializable
+            data class ContinuationCommand(
+                val token: String?,
+            )
+        }
+    }
 }
 
 fun List<Continuation>.getContinuation() =

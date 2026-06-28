@@ -312,9 +312,12 @@ fun OnlinePlaylistScreen(
                                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                                     Button(
                                         onClick = {
-                                            playerConnection.service.getAutomix(playlistId = playlist.id)
-                                            playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint))
+                                            playlist.shuffleEndpoint?.let {
+                                                playerConnection.service.getAutomix(playlistId = playlist.id)
+                                                playerConnection.playQueue(YouTubeQueue(it))
+                                            }
                                         },
+                                        enabled = playlist.shuffleEndpoint != null,
                                         contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                                         modifier = Modifier.weight(1f),
                                     ) {
