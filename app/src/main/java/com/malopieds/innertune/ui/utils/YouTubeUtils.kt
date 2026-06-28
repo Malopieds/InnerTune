@@ -5,16 +5,18 @@ fun String.resize(
     height: Int? = null,
 ): String {
     if (width == null && height == null) return this
-    "https://lh3\\.googleusercontent\\.com/.*=w(\\d+)-h(\\d+).*".toRegex().matchEntire(this)?.groupValues?.let { group ->
-        val (W, H) = group.drop(1).map { it.toInt() }
-        var w = width
-        var h = height
-        if (w != null && h == null) h = (w / W) * H
-        if (w == null && h != null) w = (h / H) * W
-        return "${split("=w")[0]}=w$w-h$h-p-l90-rj"
+    // lh3.googleusercontent.com URLs: replace the =w{W}-h{H} size segment
+    val lh3Regex = "=w(\\d+)-h(\\d+)".toRegex()
+    lh3Regex.find(this)?.let { match ->
+        val w = width ?: height!!
+        val h = height ?: width!!
+        return replaceRange(match.range, "=w$w-h$h-p-l90-rj")
     }
-    if (this matches "https://yt3\\.ggpht\\.com/.*=s(\\d+)".toRegex()) {
-        return "$this-s${width ?: height}"
+    // yt3.ggpht.com URLs: replace existing =s{N} size parameter
+    val ggphtRegex = "=s(\\d+)".toRegex()
+    ggphtRegex.find(this)?.let { match ->
+        val s = width ?: height!!
+        return replaceRange(match.range, "=s$s")
     }
     return this
 }
